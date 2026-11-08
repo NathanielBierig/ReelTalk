@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Check, Crown, Send as SendIcon } from 'lucide-react'
-import { Avatar, Chunk, Kicker, Screen, Timer, TopBar } from '@/components/bits'
+import { Check, Crown } from 'lucide-react'
+import { Avatar, Kicker, Screen, Timer, TopBar } from '@/components/bits'
+import { Composer } from '@/components/Composer'
+import { AnswerBody } from '@/components/MediaAnswer'
 import { WatchButton } from '@/components/ReelCard'
 import { useCountdown } from '@/lib/room'
 import { cn } from '@/lib/utils'
-import { LIMITS, type ClientMsg, type RoomView } from '../../shared/types'
+import type { ClientMsg, RoomView } from '../../shared/types'
 
 type Props = { state: RoomView; send: (m: ClientMsg) => void; offset: number }
 
@@ -19,9 +21,8 @@ export function PhoneAnswer({ state, send, offset }: Props) {
   const secs = useCountdown(state.deadline, offset)
   const judge = state.players.find(p => p.id === r.judgeId)
   const amJudge = r.judgeId === state.you.id
-  const [text, setText] = useState(r.myAnswer ?? '')
-  const [editing, setEditing] = useState(!r.myAnswer)
-  const locked = !!r.myAnswer && !editing
+  const [editing, setEditing] = useState(!r.myAnswerId)
+  const locked = !!r.myAnswerId && !editing
   const showReelOnPhone = state.mode === 'bus' || amJudge
 
   return (
@@ -61,45 +62,18 @@ export function PhoneAnswer({ state, send, offset }: Props) {
             >
               <Check className="mx-auto size-12 text-mint" />
               <p className="font-display text-xl font-black uppercase">Locked in</p>
-              <p className="rounded-2xl bg-night p-4 text-xl font-semibold">“{r.myAnswer}”</p>
+              <AnswerBody text={r.myAnswer ?? ''} media={r.myAnswerMedia} className="rounded-2xl bg-night p-4" />
               <p className="text-sm text-muted-foreground">{r.answeredCount}/{r.answererCount} answered</p>
               <button onClick={() => setEditing(true)} className="text-sm font-semibold underline underline-offset-4">Change it</button>
             </motion.section>
           ) : (
-            <form
-              className="sticker space-y-3 p-4"
-              onSubmit={e => {
-                e.preventDefault()
-                if (!text.trim()) return
-                send({ t: 'answer', text })
-                setEditing(false)
-              }}
-            >
-              <Kicker>Describe this reel. Make {r.judgeName} laugh.</Kicker>
-              <textarea
-                value={text}
-                onChange={e => setText(e.target.value.slice(0, LIMITS.answerChars))}
-                rows={3}
-                placeholder="me when the group chat goes quiet…"
-                enterKeyHint="send"
-                aria-label="Your answer"
-                className="w-full resize-none rounded-2xl border-2 border-input bg-night p-4 text-xl font-semibold leading-snug outline-none focus:border-acid"
-                onKeyDown={e => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault()
-                    ;(e.currentTarget.form as HTMLFormElement).requestSubmit()
-                  }
-                }}
-              />
-              <div className="flex items-center justify-between gap-3">
-                <span className={cn('font-display text-sm font-bold tabular-nums', text.length > LIMITS.answerChars - 10 ? 'text-pink' : 'text-muted-foreground')}>
-                  {LIMITS.answerChars - text.length}
-                </span>
-                <Chunk type="submit" color="acid" className="w-auto px-8" disabled={!text.trim()}>
-                  <SendIcon className="size-5" /> Send
-                </Chunk>
-              </div>
-            </form>
+            <Composer
+              state={state}
+              send={send}
+              onSent={() => setEditing(false)}
+              initialText={r.myAnswer ?? ''}
+              initialMedia={r.myAnswerMedia}
+            />
           )}
         </>
       )}
@@ -154,7 +128,7 @@ export function PhoneJudge({ state, send, offset }: Props) {
                   )}
                   aria-pressed={on}
                 >
-                  “{a.text}”
+                  <AnswerBody text={a.text} media={a.media} />
                   {mine && <span className="mt-2 block font-display text-xs font-extrabold uppercase tracking-widest text-muted-foreground">yours</span>}
                   {on && <Check className="absolute right-4 top-4 size-6" />}
                 </button>

@@ -10,6 +10,9 @@ Cards Against Humanity, but the black card is a friend's Instagram reel.
 5. **Reveal**: judge pick +1, audience favorite +1 (ties all get it; audience bonus only with 4+ players).
 6. **Final**: winner screen after N x R rounds.
 
+## Playback decision (after real-iPhone test)
+On iPhone every embed opened Instagram, so phones always use a **Watch the reel** button (opens the Instagram app, then ◀ Safari back). The TV/laptop shows Instagram's embed, which can play inline on desktop, plus an Open on Instagram fallback. Silent inline video is not possible without downloading from Instagram, which is out.
+
 ## Modes
 - **Party**: host screen plays the reel; phones are controllers.
 - **Bus**: no host screen, each phone plays the reel (headphones), "Watched" button before answering.
@@ -31,10 +34,11 @@ Cards Against Humanity, but the black card is a friend's Instagram reel.
 
 ## Milestones
 - [x] **M0** Playback spike (see SPIKE.md)
-- [ ] **M1** Rooms: create/join by QR, live lobby, deployed
-- [ ] **M2** Submission: Open Instagram + Paste, server validation, preview cards
-- [ ] **M3** Core loop with text answers, timers, reconnects, real-game test
-- [ ] **M4** GIF/sticker search + camera-roll images, audience vote, winner screen, animations
+- [x] **M1** Rooms: create/join by QR, live lobby, deployed
+- [x] **M2** Submission: Open Instagram + Paste, server validation (playable / music / private rejected)
+- [x] **M3** Core loop with text answers, timers, reconnects (tested with simulated phones, party + bus)
+- [x] **M4** Camera-roll photo answers, audience vote, winner screen, animations
+- [ ] **M4b** GIF/sticker search: built, switches on when `GIPHY_API_KEY` secret is set on the Worker
 - [ ] **M5** Hardening: kick player, judge-dropout fallback, duplicate reels, real-device pass
 
 ## Out of MVP (v2)

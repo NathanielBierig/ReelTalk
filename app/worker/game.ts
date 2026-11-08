@@ -1,7 +1,8 @@
 // Pure game logic. No I/O, so it is easy to test and reason about.
 import {
   LIMITS, PLAYER_COLORS,
-  type Mode, type Phase, type ReelStatus, type RoomView, type Settings, type RevealAnswer,
+  isAllowedMediaUrl,
+  type Media, type Mode, type Phase, type ReelStatus, type RoomView, type Settings, type RevealAnswer,
 } from '../shared/types'
 
 export interface Player {
@@ -22,6 +23,7 @@ export interface Reel {
 export interface Answer {
   id: string
   text: string
+  media?: Media
 }
 
 export interface Round {
@@ -200,14 +202,28 @@ export function voters(s: GameState, r: Round, connected: Set<string>): string[]
     .map(p => p.id)
 }
 
-export function submitAnswer(s: GameState, playerId: string, raw: string, now: number, connected: Set<string>): Result {
+export function submitAnswer(
+  s: GameState, playerId: string, raw: string, now: number, connected: Set<string>, rawMedia?: Media,
+): Result {
   const r = currentRound(s)
   if (s.phase !== 'answer' || !r) return fail('Not answering right now')
   if (playerId === r.judgeId) return fail("It's your reel, you're the judge!")
   if (!s.players.some(p => p.id === playerId)) return fail('Not in this game')
   const text = raw.trim().replace(/\s+/g, ' ').slice(0, LIMITS.answerChars)
-  if (!text) return fail('Write something first')
-  r.answers[playerId] = { id: r.answers[playerId]?.id ?? rid(6), text }
+  let media: Media | undefined
+  if (rawMedia) {
+    const kind = rawMedia.kind
+    if (kind !== 'gif' && kind !== 'sticker' && kind !== 'image') return fail('Unknown media type')
+    const m: Media = {
+      kind, url: String(rawMedia.url).slice(0, 600),
+      w: Math.max(1, Math.min(4000, Math.round(Number(rawMedia.w) || 1))),
+      h: Math.max(1, Math.min(4000, Math.round(Number(rawMedia.h) || 1))),
+    }
+    if (!isAllowedMediaUrl(m, s.code)) return fail("That image can't be used")
+    media = m
+  }
+  if (!text && !media) return fail('Write something first')
+  r.answers[playerId] = { id: r.answers[playerId]?.id ?? rid(6), text, media }
   const need = answerers(s, r, connected)
   if (need.length > 0 && need.every(id => r.answers[id])) toJudge(s, now)
   return ok
@@ -273,7 +289,7 @@ export function toReveal(s: GameState, now: number) {
     const votes = counts.get(a.id) ?? 0
     const judgePick = r.pick === a.id
     const audienceWin = bonus && max > 0 && votes === max
-    return { playerId, text: a.text, judgePick, votes, audienceWin, points: (judgePick ? 1 : 0) + (audienceWin ? 1 : 0) }
+    return { playerId, text: a.text, media: a.media, judgePick, votes, audienceWin, points: (judgePick ? 1 : 0) + (audienceWin ? 1 : 0) }
   })
   for (const ra of reveal) {
     const p = s.players.find(x => x.id === ra.playerId)
@@ -330,7 +346,9 @@ export function playAgain(s: GameState, by: string): Result {
 
 // ---------- view ----------
 
-export function viewFor(s: GameState, viewerId: string, connected: Set<string>, now: number): RoomView {
+export function viewFor(
+  s: GameState, viewerId: string, connected: Set<string>, now: number, features = { gifs: false },
+): RoomView {
   const r = currentRound(s)
   const isPlayer = s.players.some(p => p.id === viewerId)
   const view: RoomView = {
@@ -348,6 +366,7 @@ export function viewFor(s: GameState, viewerId: string, connected: Set<string>, 
     myReels: s.reels.filter(x => x.ownerId === viewerId).map(x => ({ id: x.id, code: x.code, status: x.status })),
     deadline: s.deadline,
     serverNow: now,
+    features,
   }
   if (r && (s.phase === 'answer' || s.phase === 'judge' || s.phase === 'reveal')) {
     const reel = s.reels.find(x => x.id === r.reelId)
@@ -366,6 +385,7 @@ export function viewFor(s: GameState, viewerId: string, connected: Set<string>, 
       voterCount: voters(s, r, connected).length,
       judgePicked: !!r.pick,
       myAnswer: myAnswer?.text,
+      myAnswerMedia: myAnswer?.media,
       myAnswerId: myAnswer?.id,
       myVote: r.votes[viewerId],
       myPick: viewerId === r.judgeId ? r.pick : undefined,
@@ -373,7 +393,7 @@ export function viewFor(s: GameState, viewerId: string, connected: Set<string>, 
     }
     if (s.phase === 'judge') {
       const byId = new Map(Object.values(r.answers).map(a => [a.id, a]))
-      view.round.answers = r.order.map(id => ({ id, text: byId.get(id)!.text }))
+      view.round.answers = r.order.map(id => ({ id, text: byId.get(id)!.text, media: byId.get(id)!.media }))
       // Let the client know which one is theirs (so it can be disabled) without revealing others.
       if (myAnswer) view.round.myAnswer = myAnswer.text
     }

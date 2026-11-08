@@ -1,11 +1,12 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { Crown, Users } from 'lucide-react'
-import { Avatar, Chunk, Kicker, Logo, Timer } from '@/components/bits'
+import { Avatar, Kicker, Logo, Timer } from '@/components/bits'
 import { QR, joinUrl } from '@/components/QR'
 import { ReelEmbed } from '@/components/ReelCard'
+import { AnswerBody } from '@/components/MediaAnswer'
 import { useCountdown } from '@/lib/room'
 import { cn } from '@/lib/utils'
-import { ReelDots, SettingsRows, startBlocker } from './PhoneLobby'
+import { ReelDots, SettingsRows, StartButton, startBlocker } from './PhoneLobby'
 import { Final, Reveal } from './Results'
 import type { ClientMsg, RoomView } from '../../shared/types'
 
@@ -87,9 +88,12 @@ function Lobby({ state, send }: Props) {
           <div className="grid gap-6 xl:grid-cols-[1fr_auto]">
             <div className="sticker p-5"><SettingsRows state={state} send={send} big /></div>
             <div className="flex flex-col justify-end gap-2">
-              <Chunk color="pink" className="min-h-20 px-10 text-xl" disabled={!!blocker} onClick={() => send({ t: 'startGame' })}>
-                {blocker ?? 'Start the game'}
-              </Chunk>
+              <StartButton
+                blocker={blocker}
+                missing={state.players.filter(p => p.reelCount < state.settings.reelsPerPlayer).length}
+                onStart={() => send({ t: 'startGame' })}
+                className="min-h-20 whitespace-normal px-10 text-xl"
+              />
               <p className="text-center text-sm text-muted-foreground">Players add reels from their phones</p>
             </div>
           </div>
@@ -152,16 +156,16 @@ function Judging({ state, offset }: Props) {
         </div>
       </header>
       <Timer secs={secs} total={state.settings.judgeSecs} big />
-      <div className="grid flex-1 content-start gap-5 md:grid-cols-2">
+      <div className="grid flex-1 content-start items-start gap-5 md:grid-cols-2">
         {answers.map((a, i) => (
           <motion.div
             key={a.id}
             initial={{ opacity: 0, y: 40, rotate: i % 2 ? 3 : -3 }}
             animate={{ opacity: 1, y: 0, rotate: i % 2 ? 0.6 : -0.6 }}
             transition={{ delay: i * 0.12, type: 'spring', stiffness: 260, damping: 20 }}
-            className="rounded-3xl border-[3px] border-ink/15 bg-panel p-7 text-3xl font-semibold leading-snug"
+            className="rounded-3xl border-[3px] border-ink/15 bg-panel p-7"
           >
-            “{a.text}”
+            <AnswerBody text={a.text} media={a.media} big />
           </motion.div>
         ))}
       </div>

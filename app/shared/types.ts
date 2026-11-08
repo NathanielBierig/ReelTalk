@@ -25,14 +25,25 @@ export interface MyReel {
   status: ReelStatus
 }
 
+export type MediaKind = 'gif' | 'sticker' | 'image'
+
+export interface Media {
+  kind: MediaKind
+  url: string
+  w: number
+  h: number
+}
+
 export interface PublicAnswer {
   id: string // opaque answer id (not the player id) until reveal
-  text: string
+  text: string // caption (may be empty when media is present)
+  media?: Media
 }
 
 export interface RevealAnswer {
   playerId: string
   text: string
+  media?: Media
   judgePick: boolean
   votes: number
   audienceWin: boolean
@@ -52,6 +63,7 @@ export interface RoundView {
   voterCount: number
   judgePicked: boolean
   myAnswer?: string
+  myAnswerMedia?: Media
   myAnswerId?: string
   myVote?: string
   myPick?: string
@@ -72,6 +84,7 @@ export interface RoomView {
   round?: RoundView
   deadline?: number // epoch ms
   serverNow: number
+  features: { gifs: boolean }
 }
 
 // client -> server
@@ -82,7 +95,7 @@ export type ClientMsg =
   | { t: 'addReel'; url: string }
   | { t: 'removeReel'; id: string }
   | { t: 'startGame' }
-  | { t: 'answer'; text: string }
+  | { t: 'answer'; text: string; media?: Media }
   | { t: 'pick'; answerId: string }
   | { t: 'vote'; answerId: string }
   | { t: 'next' }
@@ -115,4 +128,18 @@ export const PLAYER_COLORS = [
 export function parseReelCode(input: string): string | null {
   const m = input.trim().match(/instagram\.com\/(?:[A-Za-z0-9_.]+\/)?(?:reel|reels|p|tv)\/([A-Za-z0-9_-]{5,})/i)
   return m ? m[1] : null
+}
+
+export interface GifResult {
+  id: string
+  preview: string // small animated (grid)
+  url: string // what gets shown as the answer
+  w: number
+  h: number
+}
+
+/** Media URLs we accept in answers: GIPHY CDN, or images uploaded to this room. */
+export function isAllowedMediaUrl(m: Media, roomCode: string): boolean {
+  if (m.kind === 'image') return new RegExp(`^/api/rooms/${roomCode}/images/[a-z0-9]{8,16}$`).test(m.url)
+  return /^https:\/\/(media\d*|i)\.giphy\.com\/[^\s"'<>]+$/.test(m.url)
 }

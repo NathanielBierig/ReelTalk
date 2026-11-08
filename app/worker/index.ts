@@ -1,11 +1,15 @@
 import { DurableObject } from 'cloudflare:workers'
 import * as G from './game'
-import { parseReelCode, type ClientMsg, type ReelStatus, type ServerMsg, type Mode } from '../shared/types'
+import { parseReelCode, type ClientMsg, type GifResult, type ReelStatus, type ServerMsg, type Mode } from '../shared/types'
 import { ASSETS } from './assets.gen'
 
 export interface Env {
   ROOMS: DurableObjectNamespace<Room>
+  GIPHY_API_KEY?: string // optional: enables GIF/sticker answers
 }
+
+const MAX_IMAGE_BYTES = 300 * 1024
+const IMAGE_TYPES = new Set(['image/jpeg', 'image/webp', 'image/png'])
 
 const CODE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ' // no I/O to avoid confusion
 const json = (data: unknown, status = 200) =>
@@ -73,6 +77,32 @@ export default {
       return stub.fetch(req)
     }
 
+    if (url.pathname === '/api/gifs') return searchGifs(url, env)
+
+    const upload = url.pathname.match(/^\/api\/rooms\/([A-Z]{4})\/images$/)
+    if (upload && req.method === 'POST') {
+      const cid = (url.searchParams.get('cid') ?? '').slice(0, 40)
+      const type = (req.headers.get('content-type') ?? '').split(';')[0]
+      if (!IMAGE_TYPES.has(type)) return json({ error: 'JPEG, WebP or PNG only' }, 415)
+      const len = Number(req.headers.get('content-length') ?? 0)
+      if (len > MAX_IMAGE_BYTES) return json({ error: 'Image too big' }, 413)
+      const bytes = await req.arrayBuffer()
+      if (bytes.byteLength > MAX_IMAGE_BYTES) return json({ error: 'Image too big' }, 413)
+      const stub = env.ROOMS.get(env.ROOMS.idFromName(upload[1]))
+      const res = await stub.putImage(cid, bytes, type)
+      return 'error' in res ? json(res, 400) : json(res)
+    }
+
+    const img = url.pathname.match(/^\/api\/rooms\/([A-Z]{4})\/images\/([a-z0-9]{8,16})$/)
+    if (img) {
+      const stub = env.ROOMS.get(env.ROOMS.idFromName(img[1]))
+      const found = await stub.getImage(img[2])
+      if (!found) return new Response('not found', { status: 404 })
+      return new Response(found.bytes, {
+        headers: { 'content-type': found.type, 'cache-control': 'private, max-age=86400, immutable' },
+      })
+    }
+
     const exists = url.pathname.match(/^\/api\/rooms\/([A-Z]{4})$/)
     if (exists) {
       const stub = env.ROOMS.get(env.ROOMS.idFromName(exists[1]))
@@ -83,6 +113,32 @@ export default {
     return serveAsset(url.pathname)
   },
 } satisfies ExportedHandler<Env>
+
+/** GIPHY search proxy: keeps the key server-side and trims the payload for phones. */
+async function searchGifs(url: URL, env: Env): Promise<Response> {
+  if (!env.GIPHY_API_KEY) return json({ error: 'GIF search is not set up' }, 501)
+  const q = (url.searchParams.get('q') ?? '').trim().slice(0, 50)
+  const kind = url.searchParams.get('type') === 'stickers' ? 'stickers' : 'gifs'
+  const api = new URL(`https://api.giphy.com/v1/${kind}/${q ? 'search' : 'trending'}`)
+  api.searchParams.set('api_key', env.GIPHY_API_KEY)
+  api.searchParams.set('limit', '24')
+  api.searchParams.set('rating', 'r') // friends-only game: owner chose no family filter
+  api.searchParams.set('bundle', 'messaging_non_clips')
+  if (q) api.searchParams.set('q', q)
+  const res = await fetch(api, { cf: { cacheTtl: 600, cacheEverything: true } })
+  if (!res.ok) return json({ error: 'GIF search failed' }, 502)
+  type Img = { url: string; webp?: string; width: string; height: string }
+  const body = (await res.json()) as { data: { id: string; images: Record<string, Img> }[] }
+  const results: GifResult[] = body.data.flatMap(g => {
+    const small = g.images.fixed_width_small ?? g.images.fixed_width
+    const main = g.images.fixed_width ?? g.images.downsized
+    if (!small || !main) return []
+    return [{ id: g.id, preview: small.webp || small.url, url: main.webp || main.url, w: Number(main.width), h: Number(main.height) }]
+  })
+  return new Response(JSON.stringify({ results }), {
+    headers: { 'content-type': 'application/json', 'cache-control': 'public, max-age=300' },
+  })
+}
 
 function serveAsset(pathname: string): Response {
   const asset = ASSETS[pathname] ?? ASSETS['/index.html']
@@ -120,6 +176,26 @@ export class Room extends DurableObject<Env> {
     return !!this.state
   }
 
+  /** Camera-roll answers. Stored in this room only, wiped on "play again". */
+  async putImage(cid: string, bytes: ArrayBuffer, type: string): Promise<{ url: string } | { error: string }> {
+    if (!this.state) return { error: 'No such room' }
+    if (!this.state.players.some(p => p.id === cid)) return { error: 'Join the room first' }
+    const count = ((await this.ctx.storage.get<number>(`imgcount:${cid}`)) ?? 0) + 1
+    if (count > 30) return { error: 'Too many uploads' }
+    const id = G.rid(12)
+    await this.ctx.storage.put({ [`img:${id}`]: { type, bytes }, [`imgcount:${cid}`]: count })
+    return { url: `/api/rooms/${this.state.code}/images/${id}` }
+  }
+
+  async getImage(id: string): Promise<{ type: string; bytes: ArrayBuffer } | null> {
+    return (await this.ctx.storage.get<{ type: string; bytes: ArrayBuffer }>(`img:${id}`)) ?? null
+  }
+
+  private async wipeImages() {
+    const keys = [...(await this.ctx.storage.list({ prefix: 'img' })).keys()]
+    for (let i = 0; i < keys.length; i += 128) await this.ctx.storage.delete(keys.slice(i, i + 128))
+  }
+
   async fetch(req: Request): Promise<Response> {
     if (!this.state) return new Response('no such room', { status: 404 })
     const cid = (new URL(req.url).searchParams.get('cid') ?? '').slice(0, 40)
@@ -154,7 +230,7 @@ export class Room extends DurableObject<Env> {
     const connected = this.connected()
     for (const ws of this.ctx.getWebSockets()) {
       const cid = this.ctx.getTags(ws)[0]
-      this.send(ws, { t: 'state', state: G.viewFor(this.state, cid, connected, now) })
+      this.send(ws, { t: 'state', state: G.viewFor(this.state, cid, connected, now, { gifs: !!this.env.GIPHY_API_KEY }) })
     }
   }
 
@@ -194,7 +270,7 @@ export class Room extends DurableObject<Env> {
       }
       case 'removeReel': r = G.removeReel(s, cid, String(msg.id)); break
       case 'startGame': r = G.startGame(s, cid, now); break
-      case 'answer': r = G.submitAnswer(s, cid, String(msg.text ?? ''), now, connected); break
+      case 'answer': r = G.submitAnswer(s, cid, String(msg.text ?? ''), now, connected, msg.media); break
       case 'pick': r = G.pick(s, cid, String(msg.answerId), now, connected); break
       case 'vote': r = G.vote(s, cid, String(msg.answerId), now, connected); break
       case 'next':
@@ -210,7 +286,10 @@ export class Room extends DurableObject<Env> {
         }
         break
       }
-      case 'playAgain': r = G.playAgain(s, cid); break
+      case 'playAgain':
+        r = G.playAgain(s, cid)
+        if (r.ok) await this.wipeImages()
+        break
       default: return
     }
 

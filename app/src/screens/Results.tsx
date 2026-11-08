@@ -3,6 +3,7 @@ import { motion } from 'motion/react'
 import confetti from 'canvas-confetti'
 import { Crown, Flame, Home, RotateCcw, SkipForward } from 'lucide-react'
 import { Avatar, Chunk, Kicker, Logo, Screen, Timer, TopBar } from '@/components/bits'
+import { AnswerBody } from '@/components/MediaAnswer'
 import { useCountdown } from '@/lib/room'
 import { cn } from '@/lib/utils'
 import { navigate } from '../App'
@@ -55,7 +56,7 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
 
       {reveal.length === 0 && <p className="sticker p-6 text-center text-xl">Nobody answered. Brutal. 💀</p>}
 
-      <div className={cn(big ? 'grid grid-cols-2 gap-5' : 'space-y-3')}>
+      <div className={cn(big ? 'grid grid-cols-2 items-start gap-5' : 'space-y-3')}>
         {reveal.map((a, i) => {
           const p = byId.get(a.playerId)
           const win = a.judgePick
@@ -71,7 +72,7 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
                 big && 'p-7',
               )}
             >
-              <p className={cn('font-semibold leading-snug', big ? 'text-3xl' : 'text-xl')}>“{a.text}”</p>
+              <AnswerBody text={a.text} media={a.media} big={big} />
               <div className="mt-4 flex flex-wrap items-center gap-2">
                 {p && <Avatar p={p} size={big ? 40 : 30} />}
                 <span className={cn('font-display font-extrabold', big ? 'text-xl' : 'text-base')}>{p?.name ?? 'someone'}</span>

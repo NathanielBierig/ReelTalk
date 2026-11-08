@@ -243,16 +243,7 @@ function HostControls({ state, send }: { state: RoomView; send: Send }) {
     <section className="sticker space-y-4 border-acid/40 p-4">
       <Kicker className="text-acid">You're the host</Kicker>
       <SettingsRows state={state} send={send} />
-      <Chunk
-        color="pink"
-        disabled={!!blocker}
-        onClick={() => {
-          if (missing > 0 && !confirm(`${missing} player(s) haven't added all their reels. Start anyway?`)) return
-          send({ t: 'startGame' })
-        }}
-      >
-        {blocker ?? 'Start the game'}
-      </Chunk>
+      <StartButton blocker={blocker} missing={missing} onStart={() => send({ t: 'startGame' })} />
       <ShareRoom code={state.code} />
     </section>
   )
@@ -267,5 +258,30 @@ function ShareRoom({ code }: { code: string }) {
       </button>
       {show && <div className="flex justify-center"><QR code={code} size={220} /></div>}
     </div>
+  )
+}
+
+/** Two-tap start when people are still adding reels (no native popups mid-party). */
+export function StartButton({ blocker, missing, onStart, className }: {
+  blocker: string | null; missing: number; onStart: () => void; className?: string
+}) {
+  const [armed, setArmed] = useState(false)
+  useEffect(() => {
+    if (!armed) return
+    const t = window.setTimeout(() => setArmed(false), 4000)
+    return () => window.clearTimeout(t)
+  }, [armed])
+  return (
+    <Chunk
+      color={armed ? 'acid' : 'pink'}
+      disabled={!!blocker}
+      className={className}
+      onClick={() => {
+        if (missing > 0 && !armed) { setArmed(true); return }
+        onStart()
+      }}
+    >
+      {blocker ?? (armed ? `${missing} still adding. Tap to start anyway` : 'Start the game')}
+    </Chunk>
   )
 }
