@@ -1,0 +1,14 @@
+{
+  // Single deploy config for the whole repo. Works for `npx wrangler deploy` at the repo root,
+  // including Cloudflare's GitHub auto-builds (which run exactly that).
+  "$schema": "app/node_modules/wrangler/config-schema.json",
+  "name": "reeltalk",
+  "main": "app/worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": true,
+  "preview_urls": false,
+  "build": { "command": "cd app && npm ci --no-audit --no-fund && npm run build" },
+  "durable_objects": { "bindings": [{ "name": "ROOMS", "class_name": "Room" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Room"] }],
+  "observability": { "enabled": true }
+}

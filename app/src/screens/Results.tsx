@@ -21,7 +21,10 @@ function burst(colors: string[], power = 1) {
 
 export function Reveal({ state, send, offset = 0, big }: Props) {
   const r = state.round!
-  const reveal = r.reveal ?? []
+  // Build-up: worst first, winner last. The stagger shrinks with more answers so it never drags.
+  const reveal = [...(r.reveal ?? [])].reverse()
+  const step = Math.min(0.9, 4.5 / Math.max(1, reveal.length))
+  const delayFor = (i: number) => 0.3 + i * step + (i === reveal.length - 1 && reveal.length > 1 ? 0.6 : 0)
   const secs = useCountdown(state.deadline, offset)
   const byId = new Map(state.players.map(p => [p.id, p]))
   const iWon = reveal.find(a => a.playerId === state.you.id && a.points > 0)
@@ -30,7 +33,7 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
     const t = window.setTimeout(() => {
       if (iWon) burst(['#E9FF3B', '#FF2E88', '#3D6BFF'], 1.2)
       else if (big && reveal.some(a => a.judgePick)) burst(['#E9FF3B', '#FF2E88'], 0.8)
-    }, 450 + reveal.length * 120)
+    }, (delayFor(reveal.length - 1) + 0.5) * 1000)
     return () => window.clearTimeout(t)
     // Only on mount of this round's reveal.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,16 +63,18 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
         {reveal.map((a, i) => {
           const p = byId.get(a.playerId)
           const win = a.judgePick
+          const last = i === reveal.length - 1
           return (
             <motion.article
               key={a.playerId}
-              initial={{ opacity: 0, scale: 0.7, rotate: i % 2 ? 4 : -4 }}
+              initial={{ opacity: 0, scale: last && win ? 0.4 : 0.7, rotate: i % 2 ? 4 : -4 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ delay: 0.15 + i * 0.12, type: 'spring', stiffness: 320, damping: 18 }}
+              transition={{ delay: delayFor(i), type: 'spring', stiffness: last && win ? 220 : 320, damping: last && win ? 11 : 18 }}
               className={cn(
                 'relative rounded-3xl border-[3px] p-5',
                 win ? 'border-acid bg-acid text-night shadow-[0_8px_0_0_var(--pink)]' : a.audienceWin ? 'border-pink bg-panel' : 'border-ink/10 bg-panel',
                 big && 'p-7',
+                big && last && win && 'col-span-2',
               )}
             >
               <AnswerBody text={a.text} media={a.media} big={big} />
@@ -85,7 +90,7 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
                 <motion.span
                   initial={{ scale: 0, y: 10 }}
                   animate={{ scale: 1, y: 0 }}
-                  transition={{ delay: 0.6 + i * 0.12, type: 'spring', stiffness: 500, damping: 12 }}
+                  transition={{ delay: delayFor(i) + 0.35, type: 'spring', stiffness: 500, damping: 12 }}
                   className="absolute -right-2 -top-3 rounded-xl bg-pink px-2.5 py-1 font-display text-lg font-black text-white shadow-[0_4px_0_0_var(--night)]"
                 >
                   +{a.points}

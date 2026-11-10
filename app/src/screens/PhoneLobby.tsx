@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { QR } from '@/components/QR'
+import { reelUrl } from '@/components/ReelCard'
 import { AnimatePresence, motion } from 'motion/react'
 import { ClipboardPaste, Camera, Music2, Plus, X, Crown } from 'lucide-react'
 import { toast } from 'sonner'
@@ -134,7 +135,12 @@ function SubmitPanel({ state, send }: { state: RoomView; send: Send }) {
             >
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-acid font-display font-black text-night">{i + 1}</span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate font-mono text-sm text-ink/80">reel/{r.code}</span>
+                <span className="flex items-baseline gap-2">
+                  <span className="font-display text-base font-extrabold">Reel {i + 1}</span>
+                  <a href={reelUrl(r.code)} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-muted-foreground underline underline-offset-4">
+                    Preview
+                  </a>
+                </span>
                 {r.status === 'music' && (
                   <Badge variant="secondary" className="mt-1 gap-1 bg-night text-acid"><Music2 className="size-3" /> Has music: opens in Instagram</Badge>
                 )}

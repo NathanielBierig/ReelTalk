@@ -73,7 +73,7 @@ export function Timer({ secs, total, big }: { secs: number | null; total: number
     <div className="flex items-center gap-3" role="timer" aria-live="off" aria-label={`${secs} seconds left`}>
       <div className={cn('relative flex-1 overflow-hidden rounded-full bg-panel-2', big ? 'h-5' : 'h-3')}>
         <div
-          className={cn('absolute inset-y-0 left-0 rounded-full transition-[width] duration-300 ease-linear', hot ? 'bg-pink' : 'bg-acid')}
+          className={cn('absolute inset-y-0 left-0 rounded-full transition-[width] duration-300 ease-linear', hot ? 'bg-pink' : 'bg-ink')}
           style={{ width: `${pct}%` }}
         />
       </div>

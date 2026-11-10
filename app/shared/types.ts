@@ -116,7 +116,7 @@ export const LIMITS = {
   minPlayers: 3,
   audienceBonusMinPlayers: 4,
   maxPlayers: 12,
-  revealSecs: 12,
+  revealSecs: 15,
 }
 
 export const PLAYER_COLORS = [

@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { motion } from 'motion/react'
-import { Check, Crown } from 'lucide-react'
+import { Check, Crown, Play } from 'lucide-react'
 import { Avatar, Kicker, Screen, Timer, TopBar } from '@/components/bits'
 import { Composer } from '@/components/Composer'
 import { AnswerBody } from '@/components/MediaAnswer'
-import { WatchButton } from '@/components/ReelCard'
+import { WatchButton, reelUrl } from '@/components/ReelCard'
 import { useCountdown } from '@/lib/room'
 import { cn } from '@/lib/utils'
 import type { ClientMsg, RoomView } from '../../shared/types'
@@ -106,6 +106,15 @@ export function PhoneJudge({ state, send, offset }: Props) {
         </p>
       </header>
 
+      <a
+        href={reelUrl(r.reelCode)}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 self-start rounded-full bg-panel-2 px-4 py-2 text-sm font-semibold"
+      >
+        <Play className="size-4 fill-ink" /> Rewatch {r.judgeName}'s reel
+      </a>
+
       {!spectator && (
         <ul className="space-y-3">
           {answers.map((a, i) => {
@@ -123,7 +132,7 @@ export function PhoneJudge({ state, send, offset }: Props) {
                   onClick={() => send(amJudge ? { t: 'pick', answerId: a.id } : { t: 'vote', answerId: a.id })}
                   className={cn(
                     'relative w-full rounded-3xl border-[3px] p-5 text-left text-xl font-semibold leading-snug transition-all active:scale-[0.98]',
-                    on ? 'border-acid bg-acid text-night shadow-[0_6px_0_0_var(--ink)]' : 'border-ink/15 bg-panel hover:border-ink/40',
+                    on ? 'border-ink bg-ink text-night shadow-[0_6px_0_0_var(--pink)]' : 'border-ink/15 bg-panel hover:border-ink/40',
                     mine && 'opacity-50',
                   )}
                   aria-pressed={on}

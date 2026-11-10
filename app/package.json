@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:worker": "node scripts/bundle-assets.mjs && wrangler dev --port 8787",
+    "dev:worker": "node scripts/bundle-assets.mjs && wrangler dev -c ../wrangler.jsonc --port 8787",
     "build": "tsc -b && vite build && node scripts/bundle-assets.mjs && tsc -p tsconfig.worker.json",
-    "deploy": "npm run build && wrangler deploy",
+    "deploy": "cd .. && wrangler deploy",
     "lint": "oxlint",
     "preview": "vite preview"
   },
