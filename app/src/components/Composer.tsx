@@ -10,6 +10,8 @@ import { LIMITS, type ClientMsg, type GifResult, type Media, type RoomView } fro
 
 type Tab = 'text' | 'gif' | 'photo'
 
+const GIF_CACHE = new Map<string, GifResult[]>()
+
 /** Answer composer: write it, GIF it, or drop a reaction pic from your camera roll. */
 export function Composer({ state, send, onSent, initialText = '', initialMedia }: {
   state: RoomView
@@ -107,19 +109,27 @@ function GifPicker({ selected, onPick }: { selected?: Media; onPick: (m?: Media)
   const reqId = useRef(0)
 
   useEffect(() => {
+    // GIPHY's free key allows ~100 searches/hour for the whole app: search only after a pause,
+    // only for 2+ letters, and reuse anything already fetched this session.
+    const term = q.trim().toLowerCase()
+    if (term.length === 1) return
+    const key = `${kind}:${term}`
+    const cached = GIF_CACHE.get(key)
+    if (cached) { setResults(cached); setLoading(false); return }
     const id = ++reqId.current
     setLoading(true)
     const t = window.setTimeout(async () => {
       try {
-        const res = await fetch(`/api/gifs?type=${kind}&q=${encodeURIComponent(q)}`)
+        const res = await fetch(`/api/gifs?type=${kind}&q=${encodeURIComponent(term)}`)
         const body = (await res.json()) as { results?: GifResult[] }
+        if (body.results) GIF_CACHE.set(key, body.results)
         if (id === reqId.current) setResults(body.results ?? [])
       } catch {
         if (id === reqId.current) setResults([])
       } finally {
         if (id === reqId.current) setLoading(false)
       }
-    }, q ? 350 : 0)
+    }, term ? 700 : 0)
     return () => window.clearTimeout(t)
   }, [q, kind])
 
