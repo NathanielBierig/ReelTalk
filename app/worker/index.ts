@@ -6,6 +6,7 @@ import { ASSETS } from './assets.gen'
 export interface Env {
   ROOMS: DurableObjectNamespace<Room>
   GIPHY_API_KEY?: string // optional: enables GIF/sticker answers
+  E2E_FAKE_REELS?: string // local e2e tests only: reel codes starting with E2Etest skip the Instagram check
 }
 
 const MAX_IMAGE_BYTES = 300 * 1024
@@ -259,7 +260,8 @@ export class Room extends DurableObject<Env> {
       case 'addReel': {
         const code = parseReelCode(String(msg.url ?? ''))
         if (!code) { r = { ok: false, error: "That's not an Instagram reel link" }; break }
-        const status = await checkReel(code)
+        const fake = this.env.E2E_FAKE_REELS === '1' && code.startsWith('E2Etest')
+        const status = fake ? 'playable' : await checkReel(code)
         if (status === 'unavailable') {
           r = { ok: false, error: "That reel is private or deleted. Can't use it." }
           break

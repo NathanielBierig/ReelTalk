@@ -14,8 +14,17 @@ See [ROADMAP.md](ROADMAP.md) for what is next, [PLAN.md](PLAN.md) for MVP scope,
 ```bash
 cd app && npm install
 npm run build          # app + inlined assets + worker typecheck
-npx wrangler dev       # http://localhost:8787 (Durable Objects run locally)
+npm run dev:worker     # http://localhost:8787 (Durable Objects run locally; runs from the repo root)
 ```
+
+## Test before a playtest
+
+```bash
+cd app && npm run e2e  # Playwright: full party + bus games, refresh, leaver, late joiner
+```
+
+Screenshots of every phase land in `app/e2e-screens/`. First time on a new machine: `npx playwright install chromium`.
+Reels in tests are fake (`E2Etest…` codes, only accepted when the local server runs with `E2E_FAKE_REELS=1`), so real Instagram playback still needs a human check.
 
 ## Deploy
 
