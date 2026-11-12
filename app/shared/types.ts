@@ -81,6 +81,7 @@ export interface RoomView {
   you: { id: string; isHost: boolean; isPlayer: boolean }
   players: PublicPlayer[]
   myReels: MyReel[]
+  songReels: number // reels with licensed music: need Instagram logged in on the TV to play there
   round?: RoundView
   deadline?: number // epoch ms
   serverNow: number

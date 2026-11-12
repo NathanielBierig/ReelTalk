@@ -22,7 +22,7 @@ Phase 1 (Playtest and fix). See `ROADMAP.md`.
 - [ ] Solo test on your laptop: open `/solo`, pick 4 players, set "Reels each" to 1, paste 4 real reels, play a full game. Note what breaks.
 - [ ] Real-phone check: Paste button, iPhone (HEIC) photos, reel playback on the laptop.
 - [x] First playtest (went well; feedback shipped).
-- [ ] Playtest 2 with real-song reels. Before it: log into Instagram on the TV laptop so "play it on this screen" works. Note what breaks.
+- [ ] Playtest 2 with real-song reels. Before it: log into Instagram on the TV laptop (the TV lobby now warns and has a login button). Logged out, Instagram shows a sign-up wall instead of the video (checked 2026-11-12). Note what breaks.
 
 ## Blocked
 - GIF answers can't be tested until the GIPHY key is set.

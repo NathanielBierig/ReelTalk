@@ -100,6 +100,20 @@ function Lobby({ state, send }: Props) {
                 className="min-h-20 whitespace-normal px-10 text-xl"
               />
               <p className="text-center text-sm text-muted-foreground">Players add reels from their phones</p>
+              {state.songReels > 0 && (
+                <div className="rounded-2xl bg-panel-2 p-4 text-left">
+                  <p className="font-display font-extrabold text-acid">
+                    {state.songReels} {state.songReels === 1 ? 'reel has' : 'reels have'} a real song
+                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">They only play on this screen if this laptop is logged into Instagram. Phones can always watch them.</p>
+                  <button
+                    onClick={() => window.open('https://www.instagram.com/accounts/login/', 'reeltalk-reel', 'popup,width=460,height=860')}
+                    className="mt-3 rounded-full bg-acid px-4 py-2 text-sm font-extrabold text-night hover:brightness-110"
+                  >
+                    Log in to Instagram here
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </section>

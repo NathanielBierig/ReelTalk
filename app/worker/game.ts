@@ -363,6 +363,7 @@ export function viewFor(
       connected: connected.has(p.id),
       reelCount: s.reels.filter(x => x.ownerId === p.id).length,
     })),
+    songReels: s.reels.filter(x => x.status === 'music').length,
     myReels: s.reels.filter(x => x.ownerId === viewerId).map(x => ({ id: x.id, code: x.code, status: x.status })),
     deadline: s.deadline,
     serverNow: now,
