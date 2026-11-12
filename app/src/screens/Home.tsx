@@ -3,7 +3,7 @@ import { motion } from 'motion/react'
 import { Bus, Tv } from 'lucide-react'
 import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
-import { Chunk, Kicker, Logo, Screen } from '@/components/bits'
+import { Chunk, Logo, Screen } from '@/components/bits'
 import { clientId } from '@/lib/identity'
 import { navigate } from '../App'
 import type { Mode } from '../../shared/types'
@@ -37,21 +37,22 @@ export default function Home() {
 
   return (
     <Screen className="justify-between">
-      <section className="pt-8">
+      <section className="flex flex-col items-center gap-6 pt-10 text-center">
         <motion.div initial={{ rotate: -6, scale: 0.8 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 14 }}>
-          <Logo size="md" />
+          <Logo size="hero" />
         </motion.div>
-        <p className="mt-5 text-xl font-semibold leading-snug text-ink/90">
-          Your friends' reels are the cards.
-          <br />
-          <span className="text-muted-foreground">Write the funniest take. The reel's owner judges.</span>
+        <p className="max-w-[18rem] text-lg font-semibold leading-snug text-[#E6DAEE]">
+          Your friends' reels are the cards. Write the funniest take. The reel's owner judges.
         </p>
       </section>
 
-      <form onSubmit={join} className="sticker space-y-3 p-4">
-        <Kicker>Got a code?</Kicker>
-        <div className="flex gap-3">
+      <form onSubmit={join} className="card-gold -rotate-2 space-y-2 p-3.5">
+        <label htmlFor="room-code" className="flex items-center gap-2 pl-1 text-[0.95rem] font-extrabold text-acid">
+          <Sparkle /> Got a room code?
+        </label>
+        <div className="flex gap-2">
           <Input
+            id="room-code"
             value={code}
             onChange={e => setCode(e.target.value.replace(/[^a-z]/gi, '').slice(0, 4).toUpperCase())}
             placeholder="ABCD"
@@ -59,27 +60,34 @@ export default function Home() {
             autoCapitalize="characters"
             autoComplete="off"
             aria-label="Room code"
-            className="h-16 flex-1 rounded-2xl border-2 bg-night text-center font-display text-3xl font-black tracking-[0.35em] placeholder:text-ink/20"
+            className="h-14 flex-1 rounded-[14px] border-[1.5px] border-acid/45 bg-[#1C0F24] px-4 font-display text-2xl tracking-[0.3em] placeholder:text-[#9C88AB]"
           />
-          <Chunk type="submit" color="acid" className="w-auto px-6" disabled={code.length !== 4}>
+          <Chunk type="submit" color="acid" className="min-h-14 w-auto rounded-[14px] px-6 font-sans text-[1.05rem] font-extrabold shadow-none" disabled={code.length !== 4}>
             Join
           </Chunk>
         </div>
       </form>
 
       <section className="space-y-4">
-        <Kicker>Start a game</Kicker>
-        <Chunk color="pink" onClick={() => create('party')} disabled={!!busy}>
+        <Chunk color="pink" className="rotate-[1.5deg]" onClick={() => create('party')} disabled={!!busy}>
           <Tv className="size-6" /> {busy === 'party' ? 'Creating…' : 'Host on a TV / laptop'}
         </Chunk>
         <Chunk color="volt" onClick={() => create('bus')} disabled={!!busy}>
           <Bus className="size-6" /> {busy === 'bus' ? 'Creating…' : 'Phones only (bus mode)'}
         </Chunk>
-        <p className="text-center text-sm text-muted-foreground">3–12 players. Bring headphones for bus mode.</p>
-        <button className="mx-auto block text-sm text-muted-foreground underline" onClick={() => navigate('/solo')}>
+        <p className="text-center text-[0.95rem] text-muted-foreground">3 to 12 players. Bring headphones for bus mode.</p>
+        <button className="mx-auto block min-h-11 text-sm text-muted-foreground underline" onClick={() => navigate('/solo')}>
           Solo test: play every seat yourself
         </button>
       </section>
     </Screen>
+  )
+}
+
+function Sparkle() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden>
+      <path d="M12 1.5l2.6 7.9 7.9 2.6-7.9 2.6L12 22.5l-2.6-7.9L1.5 12l7.9-2.6z" fill="currentColor" />
+    </svg>
   )
 }

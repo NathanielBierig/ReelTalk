@@ -35,7 +35,7 @@ export function PhoneAnswer({ state, send, offset }: Props) {
           <motion.div initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 12 }}>
             <Crown className="size-16 text-acid" />
           </motion.div>
-          <p className="font-display text-2xl font-black uppercase">Your reel!</p>
+          <p className="font-display text-2xl">Your reel!</p>
           <p className="text-lg text-muted-foreground">You're the judge this round. Sit back while they write.</p>
           <p className="font-display text-4xl font-black">
             {r.answeredCount}<span className="text-muted-foreground">/{r.answererCount}</span>
@@ -60,8 +60,8 @@ export function PhoneAnswer({ state, send, offset }: Props) {
               animate={{ scale: 1, opacity: 1 }}
               className="sticker space-y-3 border-mint/50 p-5 text-center"
             >
-              <Check className="mx-auto size-12 text-mint" />
-              <p className="font-display text-xl font-black uppercase">Locked in</p>
+              <Check className="mx-auto size-12 text-acid" />
+              <p className="font-display text-xl">Locked in</p>
               <AnswerBody text={r.myAnswer ?? ''} media={r.myAnswerMedia} className="rounded-2xl bg-night p-4" />
               <p className="text-sm text-muted-foreground">{r.answeredCount}/{r.answererCount} answered</p>
               <button onClick={() => setEditing(true)} className="text-sm font-semibold underline underline-offset-4">Change it</button>
@@ -131,14 +131,14 @@ export function PhoneJudge({ state, send, offset }: Props) {
                   disabled={mine}
                   onClick={() => send(amJudge ? { t: 'pick', answerId: a.id } : { t: 'vote', answerId: a.id })}
                   className={cn(
-                    'relative w-full rounded-3xl border-[3px] p-5 text-left text-xl font-semibold leading-snug transition-all active:scale-[0.98]',
-                    on ? 'border-ink bg-ink text-night shadow-[0_6px_0_0_var(--pink)]' : 'border-ink/15 bg-panel hover:border-ink/40',
+                    'relative w-full rounded-[22px] border-[1.5px] p-5 text-left text-xl font-semibold leading-snug transition-all active:scale-[0.98]',
+                    on ? 'border-acid bg-acid text-night font-bold shadow-[0_0_0_5px_rgb(254_218_117/0.15),0_0_30px_rgb(254_218_117/0.3)]' : 'border-white/16 bg-panel hover:border-white/40',
                     mine && 'opacity-50',
                   )}
                   aria-pressed={on}
                 >
                   <AnswerBody text={a.text} media={a.media} />
-                  {mine && <span className="mt-2 block font-display text-xs font-extrabold uppercase tracking-widest text-muted-foreground">yours</span>}
+                  {mine && <span className="mt-2 block text-xs font-extrabold uppercase tracking-widest text-muted-foreground">yours</span>}
                   {on && <Check className="absolute right-4 top-4 size-6" />}
                 </button>
               </motion.li>

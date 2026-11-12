@@ -15,11 +15,11 @@ export function WatchButton({ code, className }: { code: string; className?: str
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'btn-chunk w-full whitespace-nowrap bg-gradient-to-br from-[#FEDA75] via-[#D62976] to-[#4F5BD5] text-white text-base',
+        'btn-chunk fill-grad -rotate-1 w-full whitespace-nowrap text-lg',
         className,
       )}
     >
-      <Play className="size-6 fill-white" /> Watch the reel
+      <Play className="size-6" strokeWidth={2.6} /> Watch the reel
     </a>
   )
 }

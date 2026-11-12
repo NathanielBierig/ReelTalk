@@ -49,7 +49,7 @@ export function Composer({ state, send, onSent, initialText = '', initialMedia }
             role="tab"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
-            className={cn('flex items-center justify-center gap-1.5 rounded-xl py-2.5 font-display text-sm font-extrabold uppercase transition-colors',
+            className={cn('flex items-center justify-center gap-1.5 min-h-11 rounded-xl py-2.5 font-display text-[0.95rem] transition-colors',
               tab === t.id ? 'bg-acid text-night' : 'text-ink/60')}
           >
             {t.icon}{t.label}
@@ -160,7 +160,7 @@ function GifPicker({ selected, onPick }: { selected?: Media; onPick: (m?: Media)
         <button
           type="button"
           onClick={() => setKind(k => (k === 'gifs' ? 'stickers' : 'gifs'))}
-          className="rounded-xl bg-panel-2 px-3 font-display text-xs font-extrabold uppercase"
+          className="rounded-xl bg-panel-2 px-3 font-display text-sm"
         >
           {kind === 'gifs' ? 'Stickers' : 'GIFs'}
         </button>

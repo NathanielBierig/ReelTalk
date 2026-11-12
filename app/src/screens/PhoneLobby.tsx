@@ -169,7 +169,7 @@ function SubmitPanel({ state, send }: { state: RoomView; send: Send }) {
               href="https://www.instagram.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-chunk bg-gradient-to-br from-[#FEDA75] via-[#D62976] to-[#4F5BD5] !px-2 text-sm text-white"
+              className="btn-chunk fill-glass !px-2 text-base"
             >
               <Camera className="size-5" /> Instagram
             </a>
@@ -187,7 +187,7 @@ function SubmitPanel({ state, send }: { state: RoomView; send: Send }) {
                 autoFocus
                 className="h-12 flex-1 rounded-xl border-2 bg-night text-base"
               />
-              <button type="submit" className="grid size-12 place-items-center rounded-xl bg-ink text-night" aria-label="Add reel">
+              <button type="submit" className="grid size-12 place-items-center rounded-xl bg-acid text-night" aria-label="Add reel">
                 <Plus className="size-6" />
               </button>
             </form>

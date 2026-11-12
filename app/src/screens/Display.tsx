@@ -163,7 +163,7 @@ function Judging({ state, offset }: Props) {
             initial={{ opacity: 0, y: 40, rotate: i % 2 ? 3 : -3 }}
             animate={{ opacity: 1, y: 0, rotate: i % 2 ? 0.6 : -0.6 }}
             transition={{ delay: i * 0.12, type: 'spring', stiffness: 260, damping: 20 }}
-            className="rounded-3xl border-[3px] border-ink/15 bg-panel p-7"
+            className="rounded-3xl border-[1.5px] border-white/14 bg-panel p-7"
           >
             <AnswerBody text={a.text} media={a.media} big />
           </motion.div>

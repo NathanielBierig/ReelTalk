@@ -14,7 +14,7 @@ Phase 1 (Playtest and fix). See `ROADMAP.md`.
 2. Fix the top 3 problems from your first real game once you report them.
 
 ## Your move
-- [ ] **Decide the look:** pick A, B or C (or a mix) on the Reel Talk screens canvas: https://claude.ai/artifact/WnDvhj7xeoBjrq5VozuXK1. Then tell the Lead. (Carried over from the archived design chat.)
+- [x] **Decide the look:** done 2026-11-12, see DECISIONS #4. Live on the site.
 - [ ] Add the `GIPHY_API_KEY` secret on the Worker (turns on GIF/sticker answers).
 - [ ] Fill in `team/test-reels.md` with public reels so the Playtest chat can play the live game.
 - [ ] Solo test on your laptop: open `/solo`, pick 4 players, set "Reels each" to 1, paste 4 real reels, play a full game. Note what breaks.

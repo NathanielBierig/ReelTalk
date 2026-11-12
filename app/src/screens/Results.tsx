@@ -31,8 +31,8 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
 
   useEffect(() => {
     const t = window.setTimeout(() => {
-      if (iWon) burst(['#E9FF3B', '#FF2E88', '#3D6BFF'], 1.2)
-      else if (big && reveal.some(a => a.judgePick)) burst(['#E9FF3B', '#FF2E88'], 0.8)
+      if (iWon) burst(['#FEDA75', '#D62976', '#7B2AB0'], 1.2)
+      else if (big && reveal.some(a => a.judgePick)) burst(['#FEDA75', '#D62976'], 0.8)
     }, (delayFor(reveal.length - 1) + 0.5) * 1000)
     return () => window.clearTimeout(t)
     // Only on mount of this round's reveal.
@@ -71,8 +71,8 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ delay: delayFor(i), type: 'spring', stiffness: last && win ? 220 : 320, damping: last && win ? 11 : 18 }}
               className={cn(
-                'relative rounded-3xl border-[3px] p-5',
-                win ? 'border-acid bg-acid text-night shadow-[0_8px_0_0_var(--pink)]' : a.audienceWin ? 'border-pink bg-panel' : 'border-ink/10 bg-panel',
+                'relative rounded-3xl border-[1.5px] p-5',
+                win ? '-rotate-1 border-acid bg-acid text-night shadow-[0_0_0_8px_rgb(254_218_117/0.14),0_0_60px_rgb(254_218_117/0.35)]' : a.audienceWin ? 'border-pink bg-panel' : 'border-white/14 bg-panel',
                 big && 'p-7',
                 big && last && win && 'col-span-2',
               )}
@@ -91,7 +91,7 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
                   initial={{ scale: 0, y: 10 }}
                   animate={{ scale: 1, y: 0 }}
                   transition={{ delay: delayFor(i) + 0.35, type: 'spring', stiffness: 500, damping: 12 }}
-                  className="absolute -right-2 -top-3 rounded-xl bg-pink px-2.5 py-1 font-display text-lg font-black text-white shadow-[0_4px_0_0_var(--night)]"
+                  className="absolute -right-2 -top-3 rotate-6 rounded-xl bg-[image:var(--grad)] px-2.5 py-1 font-display text-lg text-white shadow-[0_8px_20px_rgb(0_0_0/0.4)]"
                 >
                   +{a.points}
                 </motion.span>
@@ -110,7 +110,7 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
       <div className="mt-auto space-y-3">
         <Timer secs={secs} total={LIMITS.revealSecs} big={big} />
         {canSkip && (
-          <Chunk color="ink" onClick={() => send({ t: 'next' })} className={cn(big && 'max-w-sm self-center')}>
+          <Chunk color="pink" onClick={() => send({ t: 'next' })} className={cn(big && 'max-w-sm self-center')}>
             <SkipForward className="size-5" /> {r.index + 1 >= r.total ? 'Final results' : 'Next reel'}
           </Chunk>
         )}
@@ -120,7 +120,7 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
 }
 
 function Tag({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-display text-xs font-extrabold uppercase', className)}>{children}</span>
+  return <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-extrabold', className)}>{children}</span>
 }
 
 function Standings({ players, big, me }: { players: PublicPlayer[]; big?: boolean; me: string }) {
@@ -152,7 +152,7 @@ export function Final({ state, send, big }: Props) {
   const heights = big ? ['h-40', 'h-56', 'h-28'] : ['h-24', 'h-32', 'h-16']
 
   useEffect(() => {
-    const colors = winners.map(w => w.color).concat('#E9FF3B')
+    const colors = winners.map(w => w.color).concat('#FEDA75')
     burst(colors, 1.5)
     const t = window.setTimeout(() => burst(colors, 1), 900)
     return () => window.clearTimeout(t)

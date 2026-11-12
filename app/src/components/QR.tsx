@@ -8,7 +8,7 @@ export function joinUrl(code: string) {
 export function QR({ code, size = 320 }: { code: string; size?: number }) {
   const [src, setSrc] = useState('')
   useEffect(() => {
-    QRCode.toDataURL(joinUrl(code), { margin: 1, width: size * 2, color: { dark: '#120E18', light: '#FFF7EA' } })
+    QRCode.toDataURL(joinUrl(code), { margin: 1, width: size * 2, color: { dark: '#0E0612', light: '#FFFFFF' } })
       .then(setSrc)
       .catch(() => setSrc(''))
   }, [code, size])
