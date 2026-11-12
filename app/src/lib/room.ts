@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
-import type { ClientMsg, RoomView, ServerMsg } from '../../shared/types'
+import type { ChatMsg, ClientMsg, RoomView, ServerMsg } from '../../shared/types'
 import { clientId } from './identity'
 
 export type ConnState = 'connecting' | 'open' | 'closed' | 'missing' | 'kicked'
@@ -10,6 +10,7 @@ export function useRoom(code: string) {
   const [state, setState] = useState<RoomView | null>(null)
   const [conn, setConn] = useState<ConnState>('connecting')
   const [offset, setOffset] = useState(0)
+  const [chats, setChats] = useState<ChatMsg[]>([])
   const wsRef = useRef<WebSocket | null>(null)
   const retry = useRef(0)
   const stopped = useRef(false)
@@ -45,6 +46,8 @@ export function useRoom(code: string) {
             if (prev && prev.phase !== msg.state.phase) toast.dismiss()
             return msg.state
           })
+        } else if (msg.t === 'chat') {
+          setChats(prev => [...prev.slice(-29), msg.chat])
         } else if (msg.t === 'error') {
           toast.error(msg.message)
         } else if (msg.t === 'toast') {
@@ -89,7 +92,7 @@ export function useRoom(code: string) {
     else toast.error('Reconnecting… try again in a sec')
   }, [])
 
-  return { state, conn, send, offset }
+  return { state, conn, send, offset, chats }
 }
 
 /** Seconds left until a server deadline, ticking. */

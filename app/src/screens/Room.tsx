@@ -8,9 +8,10 @@ import { PhoneLobby } from './PhoneLobby'
 import { PhoneAnswer, PhoneJudge } from './PhoneRound'
 import { Reveal, Final } from './Results'
 import Display from './Display'
+import { ChatBar } from '@/components/Chat'
 
 export default function Room({ code }: { code: string }) {
-  const { state, conn, send, offset } = useRoom(code)
+  const { state, conn, send, offset, chats } = useRoom(code)
 
   if (conn === 'missing') {
     return (
@@ -45,8 +46,9 @@ export default function Room({ code }: { code: string }) {
     </div>
   )
 
-  if (isDisplay) return <>{offline}<Display state={state} send={send} offset={offset} /></>
+  if (isDisplay) return <>{offline}<Display state={state} send={send} offset={offset} chats={chats} /></>
 
+  const chat = <ChatBar chats={chats} players={state.players} send={send} />
   let screen: React.ReactNode
   if (!state.you.isPlayer) {
     screen = state.phase === 'lobby' || state.phase === 'submit'
@@ -63,8 +65,8 @@ export default function Room({ code }: { code: string }) {
       case 'submit': screen = <PhoneLobby key="lobby" state={state} send={send} />; break
       case 'answer': screen = <PhoneAnswer key={`a${state.round?.index}`} state={state} send={send} offset={offset} />; break
       case 'judge': screen = <PhoneJudge key={`j${state.round?.index}`} state={state} send={send} offset={offset} />; break
-      case 'reveal': screen = <Reveal key={`r${state.round?.index}`} state={state} send={send} offset={offset} />; break
-      case 'final': screen = <Final key="final" state={state} send={send} />; break
+      case 'reveal': screen = <Reveal key={`r${state.round?.index}`} state={state} send={send} offset={offset} chat={chat} />; break
+      case 'final': screen = <Final key="final" state={state} send={send} chat={chat} />; break
     }
   }
 

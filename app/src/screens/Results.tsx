@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { motion } from 'motion/react'
 import confetti from 'canvas-confetti'
 import { Crown, Flame, Home, RotateCcw, SkipForward } from 'lucide-react'
@@ -10,7 +10,7 @@ import { navigate } from '../App'
 import type { ClientMsg, PublicPlayer, RoomView } from '../../shared/types'
 import { LIMITS } from '../../shared/types'
 
-type Props = { state: RoomView; send: (m: ClientMsg) => void; offset?: number; big?: boolean }
+type Props = { state: RoomView; send: (m: ClientMsg) => void; offset?: number; big?: boolean; chat?: ReactNode }
 
 const reduced = () => typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -19,7 +19,7 @@ function burst(colors: string[], power = 1) {
   confetti({ particleCount: Math.round(140 * power), spread: 90, startVelocity: 45, origin: { y: 0.7 }, colors, disableForReducedMotion: true })
 }
 
-export function Reveal({ state, send, offset = 0, big }: Props) {
+export function Reveal({ state, send, offset = 0, big, chat }: Props) {
   const r = state.round!
   // Build-up: worst first, winner last. The stagger shrinks with more answers so it never drags.
   const reveal = [...(r.reveal ?? [])].reverse()
@@ -106,6 +106,7 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
       )}
 
       <Standings players={standings} big={big} me={state.you.id} />
+      {chat}
 
       <div className="mt-auto space-y-3">
         <Timer secs={secs} total={LIMITS.revealSecs} big={big} />
@@ -144,7 +145,7 @@ function Standings({ players, big, me }: { players: PublicPlayer[]; big?: boolea
   )
 }
 
-export function Final({ state, send, big }: Props) {
+export function Final({ state, send, big, chat }: Props) {
   const ranked = [...state.players].sort((a, b) => b.score - a.score)
   const top = ranked[0]
   const winners = ranked.filter(p => p.score === top?.score && p.score > 0)
@@ -204,6 +205,7 @@ export function Final({ state, send, big }: Props) {
         </ol>
       )}
 
+      {chat && <div className="w-full max-w-md text-left">{chat}</div>}
       <div className="mt-auto w-full max-w-md space-y-3 pt-6">
         {state.you.isHost ? (
           <Chunk color="acid" onClick={() => send({ t: 'playAgain' })}><RotateCcw className="size-5" /> Play again (same crew)</Chunk>

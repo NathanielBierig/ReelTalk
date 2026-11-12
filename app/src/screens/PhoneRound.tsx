@@ -23,7 +23,7 @@ export function PhoneAnswer({ state, send, offset }: Props) {
   const amJudge = r.judgeId === state.you.id
   const [editing, setEditing] = useState(!r.myAnswerId)
   const locked = !!r.myAnswerId && !editing
-  const showReelOnPhone = state.mode === 'bus' || amJudge
+  const showReelOnPhone = state.mode === 'bus' || amJudge || r.reelStatus === 'music' // music reels can't play on the TV embed
 
   return (
     <Screen>

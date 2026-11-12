@@ -101,6 +101,7 @@ export type ClientMsg =
   | { t: 'next' }
   | { t: 'kick'; playerId: string }
   | { t: 'playAgain' }
+  | { t: 'chat'; text: string }
   | { t: 'ping' }
 
 // server -> client
@@ -109,6 +110,21 @@ export type ServerMsg =
   | { t: 'error'; message: string }
   | { t: 'toast'; message: string; kind?: 'ok' | 'warn' }
   | { t: 'pong' }
+  | { t: 'chat'; chat: ChatMsg }
+
+/** Live chat line. Not stored: it's party banter, shown for a few seconds and gone. */
+export interface ChatMsg {
+  id: string
+  playerId: string
+  text: string
+  at: number // server epoch ms
+}
+
+/** Phases where players can chat: between rounds and on the podium. */
+export const CHAT_PHASES: Phase[] = ['reveal', 'final']
+
+/** One-tap reactions on the phone chat bar. */
+export const QUICK_REACTS = ['😂', '💀', '🔥', '👏', '😭']
 
 export const LIMITS = {
   answerChars: 80,
@@ -117,6 +133,8 @@ export const LIMITS = {
   audienceBonusMinPlayers: 4,
   maxPlayers: 12,
   revealSecs: 15,
+  chatChars: 60,
+  chatGapMs: 1200,
 }
 
 export const PLAYER_COLORS = [

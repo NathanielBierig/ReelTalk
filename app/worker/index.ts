@@ -1,6 +1,6 @@
 import { DurableObject } from 'cloudflare:workers'
 import * as G from './game'
-import { parseReelCode, type ClientMsg, type GifResult, type ReelStatus, type ServerMsg, type Mode } from '../shared/types'
+import { CHAT_PHASES, LIMITS, parseReelCode, type ClientMsg, type GifResult, type ReelStatus, type ServerMsg, type Mode } from '../shared/types'
 import { ASSETS } from './assets.gen'
 
 export interface Env {
@@ -158,6 +158,7 @@ function serveAsset(pathname: string): Response {
 
 export class Room extends DurableObject<Env> {
   state: G.GameState | null = null
+  private lastChat = new Map<string, number>() // chat rate limit, in memory only
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env)
@@ -287,6 +288,16 @@ export class Room extends DurableObject<Env> {
           }
         }
         break
+      }
+      case 'chat': {
+        const text = String(msg.text ?? '').trim().replace(/\s+/g, ' ').slice(0, LIMITS.chatChars)
+        if (!text || !s.players.some(p => p.id === cid) || !CHAT_PHASES.includes(s.phase)) return
+        const last = this.lastChat.get(cid) ?? 0
+        if (now - last < LIMITS.chatGapMs) return // quietly drop spam
+        this.lastChat.set(cid, now)
+        const chat = { id: G.rid(8), playerId: cid, text, at: now }
+        for (const w of this.ctx.getWebSockets()) this.send(w, { t: 'chat', chat })
+        return
       }
       case 'playAgain':
         r = G.playAgain(s, cid)

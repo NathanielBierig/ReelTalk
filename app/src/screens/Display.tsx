@@ -2,20 +2,24 @@ import { AnimatePresence, motion } from 'motion/react'
 import { Crown, Users } from 'lucide-react'
 import { Avatar, Kicker, Logo, Timer } from '@/components/bits'
 import { QR, joinUrl } from '@/components/QR'
-import { ReelEmbed } from '@/components/ReelCard'
+import { ReelStage } from '@/components/ReelCard'
+import { ChatOverlay } from '@/components/Chat'
 import { AnswerBody } from '@/components/MediaAnswer'
 import { useCountdown } from '@/lib/room'
 import { cn } from '@/lib/utils'
 import { ReelDots, SettingsRows, StartButton, startBlocker } from './PhoneLobby'
 import { Final, Reveal } from './Results'
-import type { ClientMsg, RoomView } from '../../shared/types'
+import type { ChatMsg, ClientMsg, RoomView } from '../../shared/types'
 
 type Props = { state: RoomView; send: (m: ClientMsg) => void; offset: number }
+type DisplayProps = Props & { chats: ChatMsg[] }
 
 /** The big shared screen (TV / laptop) in party mode. Not a player, just the stage. */
-export default function Display(props: Props) {
+export default function Display({ chats, ...props }: DisplayProps) {
   const { state } = props
   return (
+    <>
+    <ChatOverlay chats={chats} players={state.players} offset={props.offset} />
     <AnimatePresence mode="wait">
       {state.phase === 'lobby' || state.phase === 'submit' ? <Lobby key="lobby" {...props} />
         : state.phase === 'answer' ? <Answer key={`a${state.round?.index}`} {...props} />
@@ -23,6 +27,7 @@ export default function Display(props: Props) {
         : state.phase === 'reveal' ? <Reveal key={`r${state.round?.index}`} {...props} big />
         : <Final key="final" {...props} big />}
     </AnimatePresence>
+    </>
   )
 }
 
@@ -120,21 +125,27 @@ function RoundHead({ state }: { state: RoomView }) {
 function Answer({ state, offset }: Props) {
   const r = state.round!
   const secs = useCountdown(state.deadline, offset)
+  // The reel is the star: it gets the full screen height. The prompt is a slim side rail.
   return (
-    <Stage className="lg:flex-row lg:items-stretch">
-      <section className="flex justify-center lg:w-[42%]">
-        <ReelEmbed code={r.reelCode} status={r.reelStatus} />
+    <Stage className="h-dvh max-w-none flex-row items-stretch justify-center gap-12 lg:p-8">
+      <section className="h-full flex-none">
+        <ReelStage code={r.reelCode} status={r.reelStatus} align="end" />
       </section>
-      <section className="flex flex-1 flex-col justify-center gap-8">
+      <section className="flex max-w-xl flex-1 flex-col justify-center gap-7">
         <RoundHead state={state} />
-        <p className="display-title text-6xl xl:text-7xl">
-          Describe <span className="text-pink">this</span>.<br />Make <span className="text-acid">{r.judgeName}</span> laugh.
+        <p className="display-title text-5xl xl:text-6xl">
+          Make <span className="text-acid">{r.judgeName}</span> laugh.
         </p>
         <Timer secs={secs} total={state.settings.answerSecs} big />
         <div className="flex items-center gap-4">
-          <p className="font-display text-6xl font-black tabular-nums">{r.answeredCount}<span className="text-muted-foreground">/{r.answererCount}</span></p>
+          <p className="font-display text-5xl font-black tabular-nums">{r.answeredCount}<span className="text-muted-foreground">/{r.answererCount}</span></p>
           <p className="text-2xl font-semibold text-muted-foreground">answers in</p>
         </div>
+        {r.reelStatus === 'music' && (
+          <p className="rounded-2xl bg-panel-2 p-4 text-lg font-semibold text-muted-foreground">
+            This reel has a real song, so Instagram won't play it here. Everyone has a <span className="text-ink">Watch the reel</span> button on their phone.
+          </p>
+        )}
       </section>
     </Stage>
   )
