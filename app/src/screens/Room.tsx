@@ -16,8 +16,8 @@ export default function Room({ code }: { code: string }) {
     return (
       <Screen className="justify-center text-center">
         <Logo />
-        <p className="text-2xl font-semibold">No room called <b className="text-acid">{code}</b>.</p>
-        <Chunk color="acid" onClick={() => navigate('/')}>Back home</Chunk>
+        <p className="text-2xl font-semibold">No room called <b className="text-brass">{code}</b>.</p>
+        <Chunk color="brass" onClick={() => navigate('/')}>Back home</Chunk>
       </Screen>
     )
   }
@@ -25,14 +25,14 @@ export default function Room({ code }: { code: string }) {
     return (
       <Screen className="justify-center text-center">
         <p className="text-2xl font-semibold">The host removed you from this room.</p>
-        <Chunk color="acid" onClick={() => navigate('/')}>Back home</Chunk>
+        <Chunk color="brass" onClick={() => navigate('/')}>Back home</Chunk>
       </Screen>
     )
   }
   if (!state) {
     return (
       <Screen className="items-center justify-center">
-        <Loader2 className="size-10 animate-spin text-acid" />
+        <Loader2 className="size-10 animate-spin text-brass" />
         <p className="font-display font-bold">Joining {code}…</p>
       </Screen>
     )
@@ -40,7 +40,7 @@ export default function Room({ code }: { code: string }) {
 
   const isDisplay = state.mode === 'party' && state.you.isHost && !state.you.isPlayer
   const offline = conn !== 'open' && (
-    <div className="fixed inset-x-0 top-0 z-50 flex items-center justify-center gap-2 bg-pink py-1.5 text-sm font-bold text-white">
+    <div className="fixed inset-x-0 top-0 z-50 flex items-center justify-center gap-2 bg-rose py-1.5 text-sm font-bold text-white">
       <WifiOff className="size-4" /> Reconnecting…
     </div>
   )

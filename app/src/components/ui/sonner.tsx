@@ -10,8 +10,8 @@ const Toaster = (props: ToasterProps) => (
     toastOptions={{
       classNames: {
         toast: "!rounded-2xl !border-2 !border-ink/20 !bg-panel-2 !text-ink !font-sans !text-base !font-semibold",
-        error: "!bg-[#3a1020] !border-pink",
-        success: "!bg-[#0d2b20] !border-mint",
+        error: "!bg-[#3a1229] !border-rose",
+        success: "!bg-[#13291f] !border-mint",
       },
     }}
     {...props}

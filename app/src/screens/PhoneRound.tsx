@@ -13,7 +13,7 @@ type Props = { state: RoomView; send: (m: ClientMsg) => void; offset: number }
 
 function RoundLabel({ state }: { state: RoomView }) {
   const r = state.round!
-  return <span className="font-display text-xs font-extrabold text-muted-foreground">R{r.index + 1}/{r.total}</span>
+  return <span className="text-sm font-medium tabular-nums text-muted-foreground">Reel {r.index + 1}/{r.total}</span>
 }
 
 export function PhoneAnswer({ state, send, offset }: Props) {
@@ -33,11 +33,11 @@ export function PhoneAnswer({ state, send, offset }: Props) {
       {amJudge ? (
         <section className="sticker flex flex-col items-center gap-4 p-6 text-center">
           <motion.div initial={{ scale: 0, rotate: -30 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 12 }}>
-            <Crown className="size-16 text-acid" />
+            <Crown className="size-16 text-brass" />
           </motion.div>
-          <p className="font-display text-2xl font-black uppercase">Your reel!</p>
+          <p className="display-title text-3xl">Your reel!</p>
           <p className="text-lg text-muted-foreground">You're the judge this round. Sit back while they write.</p>
-          <p className="font-display text-4xl font-black">
+          <p className="wide text-4xl">
             {r.answeredCount}<span className="text-muted-foreground">/{r.answererCount}</span>
           </p>
           <Kicker>answers in</Kicker>
@@ -61,7 +61,7 @@ export function PhoneAnswer({ state, send, offset }: Props) {
               className="sticker space-y-3 border-mint/50 p-5 text-center"
             >
               <Check className="mx-auto size-12 text-mint" />
-              <p className="font-display text-xl font-black uppercase">Locked in</p>
+              <p className="display-title text-2xl">Locked in</p>
               <AnswerBody text={r.myAnswer ?? ''} media={r.myAnswerMedia} className="rounded-2xl bg-night p-4" />
               <p className="text-sm text-muted-foreground">{r.answeredCount}/{r.answererCount} answered</p>
               <button onClick={() => setEditing(true)} className="text-sm font-semibold underline underline-offset-4">Change it</button>
@@ -95,7 +95,7 @@ export function PhoneJudge({ state, send, offset }: Props) {
       <Timer secs={secs} total={state.settings.judgeSecs} />
       <header className="space-y-1">
         <p className="display-title text-3xl">
-          {amJudge ? <>Pick the <span className="text-acid">winner</span></> : <>Vote your <span className="text-pink">fave</span></>}
+          {amJudge ? 'Pick the winner' : 'Vote your fave'}
         </p>
         <p className="text-muted-foreground">
           {amJudge
@@ -132,13 +132,13 @@ export function PhoneJudge({ state, send, offset }: Props) {
                   onClick={() => send(amJudge ? { t: 'pick', answerId: a.id } : { t: 'vote', answerId: a.id })}
                   className={cn(
                     'relative w-full rounded-3xl border-[3px] p-5 text-left text-xl font-semibold leading-snug transition-all active:scale-[0.98]',
-                    on ? 'border-ink bg-ink text-night shadow-[0_6px_0_0_var(--pink)]' : 'border-ink/15 bg-panel hover:border-ink/40',
+                    on ? 'border-ink bg-ink text-night shadow-[0_6px_0_0_var(--rose)]' : 'border-ink/15 bg-panel hover:border-ink/40',
                     mine && 'opacity-50',
                   )}
                   aria-pressed={on}
                 >
                   <AnswerBody text={a.text} media={a.media} />
-                  {mine && <span className="mt-2 block font-display text-xs font-extrabold uppercase tracking-widest text-muted-foreground">yours</span>}
+                  {mine && <span className="mt-2 block text-sm font-medium text-muted-foreground">Yours</span>}
                   {on && <Check className="absolute right-4 top-4 size-6" />}
                 </button>
               </motion.li>

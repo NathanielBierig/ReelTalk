@@ -120,8 +120,8 @@ export const LIMITS = {
 }
 
 export const PLAYER_COLORS = [
-  '#FF2E88', '#2E6BFF', '#E9FF3B', '#00D68F', '#FF7A1A', '#A855F7',
-  '#00C2FF', '#FF4D4D', '#FFC400', '#7CFF4D', '#FF66D4', '#5EEAD4',
+  '#F0648E', '#7C97FF', '#E9B44C', '#3CC59A', '#F08446', '#B38AF2',
+  '#56C4E6', '#F26B62', '#D8CF62', '#93D46E', '#EE8AD0', '#62D2C2',
 ]
 
 /** Extracts an Instagram shortcode from any reel/post URL, or null. Drops tracking params. */

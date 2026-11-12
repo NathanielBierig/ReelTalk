@@ -55,7 +55,7 @@ function Lobby({ state, send }: Props) {
           <div className="text-center">
             <Kicker>Scan to join, or go to</Kicker>
             <p className="mt-1 text-lg font-semibold">{url}</p>
-            <p className="display-title mt-3 text-8xl tracking-[0.12em] text-acid">{state.code}</p>
+            <p className="wide mt-3 text-8xl text-brass">{state.code}</p>
           </div>
         </section>
 
@@ -111,7 +111,7 @@ function RoundHead({ state }: { state: RoomView }) {
       {judge && <Avatar p={judge} size={64} ring />}
       <div>
         <Kicker>Reel {r.index + 1} of {r.total}</Kicker>
-        <p className="font-display text-3xl font-black"><span style={{ color: judge?.color }}>{r.judgeName}</span> sent this</p>
+        <p className="display-title text-4xl"><span style={{ color: judge?.color }}>{r.judgeName}</span> sent this</p>
       </div>
     </div>
   )
@@ -128,11 +128,11 @@ function Answer({ state, offset }: Props) {
       <section className="flex flex-1 flex-col justify-center gap-8">
         <RoundHead state={state} />
         <p className="display-title text-6xl xl:text-7xl">
-          Describe <span className="text-pink">this</span>.<br />Make <span className="text-acid">{r.judgeName}</span> laugh.
+          Describe this.<br />Make {r.judgeName} laugh.
         </p>
         <Timer secs={secs} total={state.settings.answerSecs} big />
         <div className="flex items-center gap-4">
-          <p className="font-display text-6xl font-black tabular-nums">{r.answeredCount}<span className="text-muted-foreground">/{r.answererCount}</span></p>
+          <p className="wide text-6xl tabular-nums">{r.answeredCount}<span className="text-muted-foreground">/{r.answererCount}</span></p>
           <p className="text-2xl font-semibold text-muted-foreground">answers in</p>
         </div>
       </section>
@@ -149,8 +149,8 @@ function Judging({ state, offset }: Props) {
       <header className="flex flex-wrap items-end justify-between gap-6">
         <RoundHead state={state} />
         <div className="text-right">
-          <p className="flex items-center justify-end gap-2 font-display text-2xl font-black">
-            <Crown className="size-7 text-acid" /> {r.judgePicked ? `${r.judgeName} picked!` : `${r.judgeName} is choosing…`}
+          <p className="flex items-center justify-end gap-2 font-display text-2xl font-bold">
+            <Crown className="size-7 text-brass" /> {r.judgePicked ? `${r.judgeName} picked!` : `${r.judgeName} is choosing…`}
           </p>
           <p className="text-lg text-muted-foreground">{r.votedCount}/{r.voterCount} crowd votes</p>
         </div>

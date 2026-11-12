@@ -49,8 +49,8 @@ export function Composer({ state, send, onSent, initialText = '', initialMedia }
             role="tab"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
-            className={cn('flex items-center justify-center gap-1.5 rounded-xl py-2.5 font-display text-sm font-extrabold uppercase transition-colors',
-              tab === t.id ? 'bg-acid text-night' : 'text-ink/60')}
+            className={cn('flex items-center justify-center gap-1.5 rounded-[10px] py-2.5 text-[0.95rem] font-semibold transition-colors',
+              tab === t.id ? 'bg-brass text-night' : 'text-ink/60')}
           >
             {t.icon}{t.label}
           </button>
@@ -67,7 +67,7 @@ export function Composer({ state, send, onSent, initialText = '', initialMedia }
             placeholder="me when the group chat goes quiet…"
             enterKeyHint="send"
             aria-label="Your answer"
-            className="w-full resize-none rounded-2xl border-2 border-input bg-night p-4 text-xl font-semibold leading-snug outline-none focus:border-acid"
+            className="w-full resize-none rounded-2xl border-2 border-input bg-night p-4 text-xl font-semibold leading-snug outline-none focus:border-brass"
             onKeyDown={e => {
               if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit() }
             }}
@@ -90,10 +90,10 @@ export function Composer({ state, send, onSent, initialText = '', initialMedia }
       )}
 
       <div className="flex items-center justify-between gap-3">
-        <span className={cn('px-1 font-display text-sm font-bold tabular-nums', text.length > LIMITS.answerChars - 10 ? 'text-pink' : 'text-muted-foreground')}>
+        <span className={cn('px-1 font-display text-sm font-bold tabular-nums', text.length > LIMITS.answerChars - 10 ? 'text-rose' : 'text-muted-foreground')}>
           {LIMITS.answerChars - text.length}
         </span>
-        <Chunk type="submit" color="acid" className="w-auto px-8" disabled={!canSend}>
+        <Chunk type="submit" color="brass" className="w-auto px-8" disabled={!canSend}>
           <SendIcon className="size-5" /> Send
         </Chunk>
       </div>
@@ -160,13 +160,13 @@ function GifPicker({ selected, onPick }: { selected?: Media; onPick: (m?: Media)
         <button
           type="button"
           onClick={() => setKind(k => (k === 'gifs' ? 'stickers' : 'gifs'))}
-          className="rounded-xl bg-panel-2 px-3 font-display text-xs font-extrabold uppercase"
+          className="rounded-[10px] bg-panel-2 px-3 text-sm font-semibold"
         >
           {kind === 'gifs' ? 'Stickers' : 'GIFs'}
         </button>
       </div>
       <div className="h-72 overflow-y-auto overscroll-contain rounded-xl">
-        {loading && results.length === 0 && <div className="grid h-full place-items-center"><Loader2 className="size-8 animate-spin text-acid" /></div>}
+        {loading && results.length === 0 && <div className="grid h-full place-items-center"><Loader2 className="size-8 animate-spin text-brass" /></div>}
         {!loading && results.length === 0 && <p className="p-6 text-center text-muted-foreground">Nothing found. Try another word.</p>}
         <div className="columns-2 gap-2">
           {results.map(g => (
@@ -182,7 +182,7 @@ function GifPicker({ selected, onPick }: { selected?: Media; onPick: (m?: Media)
           ))}
         </div>
       </div>
-      <p className="text-right text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Powered by GIPHY</p>
+      <p className="text-right text-xs text-muted-foreground">Powered by GIPHY</p>
     </div>
   )
 }
@@ -227,7 +227,7 @@ function PhotoPicker({ code, selected, onPick }: { code: string; selected?: Medi
           disabled={busy}
           className="flex h-48 w-full flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-ink/25 bg-night text-lg font-semibold"
         >
-          {busy ? <Loader2 className="size-10 animate-spin text-acid" /> : <ImagePlus className="size-10 text-acid" />}
+          {busy ? <Loader2 className="size-10 animate-spin text-brass" /> : <ImagePlus className="size-10 text-brass" />}
           {busy ? 'Uploading…' : 'Pick a reaction pic'}
           <span className="text-sm font-normal text-muted-foreground">From your camera roll</span>
         </button>

@@ -31,8 +31,8 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
 
   useEffect(() => {
     const t = window.setTimeout(() => {
-      if (iWon) burst(['#E9FF3B', '#FF2E88', '#3D6BFF'], 1.2)
-      else if (big && reveal.some(a => a.judgePick)) burst(['#E9FF3B', '#FF2E88'], 0.8)
+      if (iWon) burst(['#E9B44C', '#E8692E', '#C42A62', '#6E34B0'], 1.2)
+      else if (big && reveal.some(a => a.judgePick)) burst(['#E9B44C', '#C42A62'], 0.8)
     }, (delayFor(reveal.length - 1) + 0.5) * 1000)
     return () => window.clearTimeout(t)
     // Only on mount of this round's reveal.
@@ -44,14 +44,14 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
 
   return (
     <Screen className={cn(big && 'max-w-6xl')}>
-      {!big && <TopBar code={state.code} label={<span className="font-display text-xs font-extrabold text-muted-foreground">R{r.index + 1}/{r.total}</span>} />}
+      {!big && <TopBar code={state.code} label={<span className="text-sm font-medium tabular-nums text-muted-foreground">Reel {r.index + 1}/{r.total}</span>} />}
       <header className={cn('flex items-end justify-between gap-4', big && 'pt-6')}>
         <div>
           <Kicker>{r.judgeName}'s reel</Kicker>
-          <p className={cn('display-title', big ? 'text-7xl' : 'text-4xl')}>The <span className="text-acid">verdict</span></p>
+          <p className={cn('display-title', big ? 'text-7xl' : 'text-4xl')}>The verdict</p>
         </div>
         {iWon && !big && (
-          <motion.span initial={{ scale: 0 }} animate={{ scale: 1, rotate: [0, -8, 8, 0] }} transition={{ delay: 0.8 }} className="rounded-2xl bg-acid px-3 py-2 font-display text-2xl font-black text-night">
+          <motion.span initial={{ scale: 0 }} animate={{ scale: 1, rotate: [0, -8, 8, 0] }} transition={{ delay: 0.8 }} className="rounded-2xl bg-brass px-3 py-2 wide text-2xl text-night">
             +{iWon.points}
           </motion.span>
         )}
@@ -72,18 +72,18 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
               transition={{ delay: delayFor(i), type: 'spring', stiffness: last && win ? 220 : 320, damping: last && win ? 11 : 18 }}
               className={cn(
                 'relative rounded-3xl border-[3px] p-5',
-                win ? 'border-acid bg-acid text-night shadow-[0_8px_0_0_var(--pink)]' : a.audienceWin ? 'border-pink bg-panel' : 'border-ink/10 bg-panel',
+                win ? 'border-brass bg-brass text-night' : a.audienceWin ? 'border-rose bg-panel' : 'border-ink/10 bg-panel',
                 big && 'p-7',
                 big && last && win && 'col-span-2',
               )}
             >
               <AnswerBody text={a.text} media={a.media} big={big} />
               <div className="mt-4 flex flex-wrap items-center gap-2">
-                {p && <Avatar p={p} size={big ? 40 : 30} />}
+                {p && <span className={cn('rounded-full', win && 'ring-2 ring-night')}><Avatar p={p} size={big ? 40 : 30} /></span>}
                 <span className={cn('font-display font-extrabold', big ? 'text-xl' : 'text-base')}>{p?.name ?? 'someone'}</span>
                 <span className="flex-1" />
-                {win && <Tag className="bg-night text-acid"><Crown className="size-4" /> Judge's pick</Tag>}
-                {a.audienceWin && <Tag className={win ? 'bg-pink text-white' : 'bg-pink/20 text-pink'}><Flame className="size-4" /> Crowd fave</Tag>}
+                {win && <Tag className="bg-night text-brass"><Crown className="size-4" /> Judge's pick</Tag>}
+                {a.audienceWin && <Tag className={win ? 'bg-rose text-white' : 'bg-rose/20 text-rose'}><Flame className="size-4" /> Crowd fave</Tag>}
                 {!a.audienceWin && a.votes > 0 && <Tag className={win ? 'bg-night/10' : 'bg-panel-2'}>{a.votes} vote{a.votes > 1 ? 's' : ''}</Tag>}
               </div>
               {a.points > 0 && (
@@ -91,7 +91,7 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
                   initial={{ scale: 0, y: 10 }}
                   animate={{ scale: 1, y: 0 }}
                   transition={{ delay: delayFor(i) + 0.35, type: 'spring', stiffness: 500, damping: 12 }}
-                  className="absolute -right-2 -top-3 rounded-xl bg-pink px-2.5 py-1 font-display text-lg font-black text-white shadow-[0_4px_0_0_var(--night)]"
+                  className="absolute -right-2 -top-3 rounded-xl bg-rose px-2.5 py-1 wide text-lg text-white ring-4 ring-night"
                 >
                   +{a.points}
                 </motion.span>
@@ -120,7 +120,7 @@ export function Reveal({ state, send, offset = 0, big }: Props) {
 }
 
 function Tag({ children, className }: { children: React.ReactNode; className?: string }) {
-  return <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 font-display text-xs font-extrabold uppercase', className)}>{children}</span>
+  return <span className={cn('inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-semibold', className)}>{children}</span>
 }
 
 function Standings({ players, big, me }: { players: PublicPlayer[]; big?: boolean; me: string }) {
@@ -132,11 +132,11 @@ function Standings({ players, big, me }: { players: PublicPlayer[]; big?: boolea
           <motion.li
             layout
             key={p.id}
-            className={cn('flex items-center gap-2 rounded-full bg-panel-2 py-1 pl-1 pr-3', p.id === me && 'ring-2 ring-acid')}
+            className={cn('flex items-center gap-2 rounded-full bg-panel-2 py-1 pl-1 pr-3', p.id === me && 'ring-2 ring-brass')}
           >
             <Avatar p={p} size={big ? 34 : 26} />
             <span className={cn('font-semibold', big && 'text-lg')}>{i === 0 && p.score > 0 ? '👑 ' : ''}{p.name}</span>
-            <span className="font-display font-black tabular-nums">{p.score}</span>
+            <span className="font-bold tabular-nums">{p.score}</span>
           </motion.li>
         ))}
       </motion.ol>
@@ -152,7 +152,7 @@ export function Final({ state, send, big }: Props) {
   const heights = big ? ['h-40', 'h-56', 'h-28'] : ['h-24', 'h-32', 'h-16']
 
   useEffect(() => {
-    const colors = winners.map(w => w.color).concat('#E9FF3B')
+    const colors = winners.map(w => w.color).concat('#E9B44C')
     burst(colors, 1.5)
     const t = window.setTimeout(() => burst(colors, 1), 900)
     return () => window.clearTimeout(t)
@@ -184,7 +184,7 @@ export function Final({ state, send, big }: Props) {
           >
             <Avatar p={p} size={big ? 72 : 52} ring={i === 1} />
             <span className="max-w-full truncate font-semibold">{p.name}</span>
-            <div className={cn('flex w-full items-start justify-center rounded-t-2xl pt-2 font-display text-3xl font-black text-night', heights[i])} style={{ background: p.color }}>
+            <div className={cn('flex w-full items-start justify-center rounded-t-2xl pt-2 wide text-3xl text-night', heights[i])} style={{ background: p.color }}>
               {p.score}
             </div>
           </motion.div>
@@ -195,10 +195,10 @@ export function Final({ state, send, big }: Props) {
         <ol className="w-full max-w-md space-y-1 text-left">
           {ranked.slice(3).map((p, i) => (
             <li key={p.id} className="flex items-center gap-3 rounded-xl bg-panel px-3 py-2">
-              <span className="w-6 font-display font-black text-muted-foreground">{i + 4}</span>
+              <span className="w-6 wide text-muted-foreground">{i + 4}</span>
               <Avatar p={p} size={28} />
               <span className="flex-1 font-semibold">{p.name}</span>
-              <span className="font-display font-black">{p.score}</span>
+              <span className="font-bold tabular-nums">{p.score}</span>
             </li>
           ))}
         </ol>
@@ -206,7 +206,7 @@ export function Final({ state, send, big }: Props) {
 
       <div className="mt-auto w-full max-w-md space-y-3 pt-6">
         {state.you.isHost ? (
-          <Chunk color="acid" onClick={() => send({ t: 'playAgain' })}><RotateCcw className="size-5" /> Play again (same crew)</Chunk>
+          <Chunk color="brass" onClick={() => send({ t: 'playAgain' })}><RotateCcw className="size-5" /> Play again (same crew)</Chunk>
         ) : (
           <p className="text-muted-foreground">The host can start another round.</p>
         )}

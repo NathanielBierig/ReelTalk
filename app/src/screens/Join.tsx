@@ -18,7 +18,7 @@ export default function Join({ state, send }: { state: RoomView; send: (m: Clien
     <Screen className="justify-center">
       <Logo />
       <form onSubmit={submit} className="sticker space-y-4 p-5">
-        <Kicker>Joining room <span className="text-acid">{state.code}</span></Kicker>
+        <Kicker>Joining room <span className="text-brass">{state.code}</span></Kicker>
         <label htmlFor="name" className="block font-display text-2xl font-extrabold">What do we call you?</label>
         <Input
           id="name"
@@ -30,7 +30,7 @@ export default function Join({ state, send }: { state: RoomView; send: (m: Clien
           enterKeyHint="go"
           className="h-16 rounded-2xl border-2 bg-night px-4 text-2xl font-semibold"
         />
-        <Chunk type="submit" color="acid" disabled={!name.trim()}>
+        <Chunk type="submit" color="brass" disabled={!name.trim()}>
           {state.you.isHost ? "Let's go" : 'Join game'}
         </Chunk>
       </form>

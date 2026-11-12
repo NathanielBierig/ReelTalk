@@ -15,7 +15,7 @@ test('solo mode: one window runs TV + 4 seats through a round', async ({ browser
   await page.getByRole('button', { name: 'Start solo test' }).click()
 
   const tvFrame = page.frameLocator('iframe[title="TV"]')
-  const codeText = await page.locator('header span.tracking-\\[0\\.2em\\]').first().innerText()
+  const codeText = await page.locator('header [data-room-code]').first().innerText()
   const code = codeText.trim()
   expect(code).toMatch(/^[A-Z]{4}$/)
   const spec = await Spectator.connect(code)

@@ -15,7 +15,7 @@ export function WatchButton({ code, className }: { code: string; className?: str
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'btn-chunk w-full whitespace-nowrap bg-gradient-to-br from-[#FEDA75] via-[#D62976] to-[#4F5BD5] text-white text-base',
+        'btn-chunk w-full whitespace-nowrap bg-dusk text-white text-base',
         className,
       )}
     >
@@ -28,7 +28,7 @@ export function WatchButton({ code, className }: { code: string; className?: str
 export function ReelEmbed({ code, status }: { code: string; status: ReelStatus }) {
   return (
     <div className="flex h-full flex-col items-center gap-3">
-      <div className="relative aspect-[9/16] h-full max-h-[70vh] overflow-hidden rounded-3xl border-4 border-ink bg-black shadow-[10px_10px_0_0_var(--pink)]">
+      <div className="relative aspect-[9/16] h-full max-h-[70vh] overflow-hidden rounded-3xl border-4 border-ink bg-black shadow-[10px_10px_0_0_var(--rose)]">
         <iframe
           key={code}
           title="Reel"
@@ -44,7 +44,7 @@ export function ReelEmbed({ code, status }: { code: string; status: ReelStatus }
         rel="noopener noreferrer"
         className="inline-flex items-center gap-2 rounded-full bg-panel-2 px-4 py-2 text-sm font-semibold hover:bg-panel"
       >
-        {status === 'music' ? <Music2 className="size-4 text-acid" /> : <ExternalLink className="size-4" />}
+        {status === 'music' ? <Music2 className="size-4 text-brass" /> : <ExternalLink className="size-4" />}
         {status === 'music' ? 'Has music: open on Instagram to play' : 'Open on Instagram'}
       </a>
     </div>

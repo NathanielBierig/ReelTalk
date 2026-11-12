@@ -5,19 +5,19 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
-  --font-heading: 'Unbounded', 'Instrument Sans', sans-serif;
-  --font-display: 'Unbounded', 'Instrument Sans', sans-serif;
+  --font-sans: 'Hanken Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Anybody', 'Hanken Grotesk', sans-serif;
+  --font-display: 'Anybody', 'Hanken Grotesk', sans-serif;
 
   --color-ink: var(--ink);
   --color-night: var(--night);
   --color-panel: var(--panel);
   --color-panel-2: var(--panel-2);
-  --color-pink: var(--pink);
-  --color-acid: var(--acid);
-  --color-volt: var(--volt);
+  --color-rose: var(--rose);
+  --color-brass: var(--brass);
+  --color-grape: var(--grape);
   --color-mint: var(--mint);
-  --color-tang: var(--tang);
+  --color-ember: var(--ember);
 
   --color-ring: var(--ring);
   --color-input: var(--input);
@@ -45,17 +45,22 @@
   --radius-3xl: calc(var(--radius) * 2.2);
 }
 
-/* Reel Talk is always "lights off": it's played at night, at parties, on buses. */
+/* Reel Talk is always "lights off": played at night, at parties, on buses.
+   Palette: Instagram's sunset (gold, orange, magenta, purple) taken down a stop,
+   on an aubergine base instead of neutral black. The full gradient is reserved
+   for the mark and for actions that open Instagram. Everything else is flat. */
 :root, .dark {
-  --night: #120E18;
-  --panel: #1D1726;
-  --panel-2: #2A2236;
-  --ink: #FFF7EA;
-  --pink: #FF2E88;
-  --acid: #E9FF3B;
-  --volt: #3D6BFF;
-  --mint: #00D68F;
-  --tang: #FF7A1A;
+  --night: #170C19;     /* aubergine base */
+  --panel: #221326;     /* surfaces */
+  --panel-2: #301C34;   /* raised: pills, inputs, inactive tabs */
+  --ink: #F7EAF0;       /* text, warm pink-white */
+  --rose: #C42A62;      /* primary: IG magenta, darker */
+  --brass: #E9B44C;     /* highlight: IG gold, muted (judge, focus, active) */
+  --grape: #6E34B0;     /* IG purple, deep */
+  --ember: #E8692E;     /* IG orange */
+  --mint: #3CC59A;      /* success */
+
+  --dusk: linear-gradient(45deg, #E9B44C 0%, #E8692E 30%, #C42A62 64%, #6E34B0 100%);
 
   --background: var(--night);
   --foreground: var(--ink);
@@ -63,19 +68,19 @@
   --card-foreground: var(--ink);
   --popover: var(--panel);
   --popover-foreground: var(--ink);
-  --primary: var(--pink);
+  --primary: var(--rose);
   --primary-foreground: #fff;
   --secondary: var(--panel-2);
   --secondary-foreground: var(--ink);
   --muted: var(--panel-2);
-  --muted-foreground: #B9AFC7;
-  --accent: var(--acid);
+  --muted-foreground: #B9A3BC;
+  --accent: var(--brass);
   --accent-foreground: var(--night);
-  --destructive: #FF4D4D;
-  --border: rgb(255 247 234 / 0.14);
-  --input: rgb(255 247 234 / 0.22);
-  --ring: var(--acid);
-  --radius: 1rem;
+  --destructive: #F0525A;
+  --border: rgb(247 234 240 / 0.10);
+  --input: rgb(247 234 240 / 0.16);
+  --ring: var(--brass);
+  --radius: 0.875rem;
 }
 
 @layer base {
@@ -85,41 +90,50 @@
     @apply bg-background text-foreground antialiased;
     min-height: 100dvh;
     overscroll-behavior: none;
-    background-image:
-      radial-gradient(60rem 40rem at 120% -10%, rgb(255 46 136 / 0.18), transparent 60%),
-      radial-gradient(50rem 40rem at -30% 110%, rgb(61 107 255 / 0.20), transparent 60%);
-    background-attachment: fixed;
   }
   button { touch-action: manipulation; }
+  :focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
 }
 
 @layer components {
-  /* Chunky "keycap" button: hard shadow that collapses on press. */
+  /* Tactile button: a darker bottom lip that flattens on press. */
   .btn-chunk {
-    @apply inline-flex items-center justify-center gap-2 rounded-2xl font-display font-extrabold uppercase tracking-wide select-none;
-    min-height: 3.75rem;
+    @apply inline-flex items-center justify-center gap-2 rounded-[14px] font-display font-bold select-none;
+    font-stretch: 88%;
+    font-size: 1.0625rem;
+    letter-spacing: 0;
+    min-height: 3.5rem;
     padding: 0 1.5rem;
-    border: 3px solid var(--night);
-    box-shadow: 0 6px 0 0 var(--night), 0 6px 0 3px rgb(255 247 234 / 0.9);
-    transition: transform 90ms ease, box-shadow 90ms ease, filter 120ms;
+    box-shadow: inset 0 -4px 0 rgb(0 0 0 / 0.28), inset 0 1px 0 rgb(255 255 255 / 0.10);
+    transition: transform 80ms ease, box-shadow 80ms ease, filter 120ms;
   }
   .btn-chunk:active:not(:disabled) {
-    transform: translateY(5px);
-    box-shadow: 0 1px 0 0 var(--night), 0 1px 0 3px rgb(255 247 234 / 0.9);
+    transform: translateY(2px);
+    box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.28);
   }
-  .btn-chunk:disabled { filter: grayscale(0.8) brightness(0.6); }
+  .btn-chunk:disabled { filter: saturate(0.2) brightness(0.65); }
+
+  /* Anybody at its default width is too wide for labels and names. */
+  .font-display { font-stretch: 82%; }
+
+  .bg-dusk { background-image: var(--dusk); }
 
   .sticker {
-    @apply rounded-3xl bg-panel;
-    border: 2px solid rgb(255 247 234 / 0.16);
+    @apply rounded-[20px] bg-panel;
+    border: 1px solid var(--border);
   }
+  /* Headlines: Anybody condensed. Codes and numbers use .wide instead. */
   .display-title {
-    @apply font-display font-black uppercase leading-[0.9] tracking-tight;
+    @apply font-display leading-[0.92];
+    font-weight: 820;
+    font-stretch: 70%;
+    letter-spacing: -0.012em;
   }
+  .wide { font-family: var(--font-display); font-stretch: 140%; font-weight: 700; letter-spacing: 0.04em; }
 }
 
 @keyframes wiggle { 0%,100% { transform: rotate(-2deg) } 50% { transform: rotate(2deg) } }
-@keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgb(233 255 59 / .7) } 100% { box-shadow: 0 0 0 18px rgb(233 255 59 / 0) } }
+@keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgb(233 180 76 / .7) } 100% { box-shadow: 0 0 0 18px rgb(233 180 76 / 0) } }
 .anim-wiggle { animation: wiggle 1.6s ease-in-out infinite; }
 .anim-pulse-ring { animation: pulse-ring 1.2s ease-out infinite; }
 @media (prefers-reduced-motion: reduce) {

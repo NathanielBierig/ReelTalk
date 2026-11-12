@@ -3,7 +3,7 @@ import { motion } from 'motion/react'
 import { Bus, Tv } from 'lucide-react'
 import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
-import { Chunk, Kicker, Logo, Screen } from '@/components/bits'
+import { Chunk, Kicker, Mark, Screen } from '@/components/bits'
 import { clientId } from '@/lib/identity'
 import { navigate } from '../App'
 import type { Mode } from '../../shared/types'
@@ -39,7 +39,10 @@ export default function Home() {
     <Screen className="justify-between">
       <section className="pt-8">
         <motion.div initial={{ rotate: -6, scale: 0.8 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 14 }}>
-          <Logo size="md" />
+          <div role="img" aria-label="Reel Talk">
+            <Mark size={88} />
+            <p className="display-title mt-4 text-7xl lowercase" aria-hidden>reel talk</p>
+          </div>
         </motion.div>
         <p className="mt-5 text-xl font-semibold leading-snug text-ink/90">
           Your friends' reels are the cards.
@@ -59,9 +62,9 @@ export default function Home() {
             autoCapitalize="characters"
             autoComplete="off"
             aria-label="Room code"
-            className="h-16 flex-1 rounded-2xl border-2 bg-night text-center font-display text-3xl font-black tracking-[0.35em] placeholder:text-ink/20"
+            className="h-16 flex-1 wide rounded-[14px] border bg-night text-center text-3xl placeholder:text-ink/20"
           />
-          <Chunk type="submit" color="acid" className="w-auto px-6" disabled={code.length !== 4}>
+          <Chunk type="submit" color="brass" className="w-auto px-6" disabled={code.length !== 4}>
             Join
           </Chunk>
         </div>
@@ -69,10 +72,10 @@ export default function Home() {
 
       <section className="space-y-4">
         <Kicker>Start a game</Kicker>
-        <Chunk color="pink" onClick={() => create('party')} disabled={!!busy}>
+        <Chunk color="rose" onClick={() => create('party')} disabled={!!busy}>
           <Tv className="size-6" /> {busy === 'party' ? 'Creating…' : 'Host on a TV / laptop'}
         </Chunk>
-        <Chunk color="volt" onClick={() => create('bus')} disabled={!!busy}>
+        <Chunk color="grape" onClick={() => create('bus')} disabled={!!busy}>
           <Bus className="size-6" /> {busy === 'bus' ? 'Creating…' : 'Phones only (bus mode)'}
         </Chunk>
         <p className="text-center text-sm text-muted-foreground">3–12 players. Bring headphones for bus mode.</p>

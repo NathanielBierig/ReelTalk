@@ -82,10 +82,10 @@ export default function Solo() {
             <p className="mt-1 text-sm text-muted-foreground">Use a laptop. Set "Reels each" to 1 so you only paste {players} reels.</p>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <Chunk color={mode === 'party' ? 'pink' : 'volt'} className={mode === 'party' ? '' : 'opacity-50'} onClick={() => setMode('party')}>
+            <Chunk color={mode === 'party' ? 'rose' : 'grape'} className={mode === 'party' ? '' : 'opacity-50'} onClick={() => setMode('party')}>
               <Tv className="size-5" /> TV + phones
             </Chunk>
-            <Chunk color={mode === 'bus' ? 'pink' : 'volt'} className={mode === 'bus' ? '' : 'opacity-50'} onClick={() => setMode('bus')}>
+            <Chunk color={mode === 'bus' ? 'rose' : 'grape'} className={mode === 'bus' ? '' : 'opacity-50'} onClick={() => setMode('bus')}>
               <Bus className="size-5" /> Phones only
             </Chunk>
           </div>
@@ -93,13 +93,13 @@ export default function Solo() {
             <Kicker>Players</Kicker>
             <div className="grid grid-cols-2 gap-3">
               {[3, 4].map(n => (
-                <Chunk key={n} color={players === n ? 'acid' : 'volt'} className={players === n ? '' : 'opacity-50'} onClick={() => setPlayers(n)}>
+                <Chunk key={n} color={players === n ? 'brass' : 'grape'} className={players === n ? '' : 'opacity-50'} onClick={() => setPlayers(n)}>
                   {n} players{n === 4 ? ' (crowd vote on)' : ''}
                 </Chunk>
               ))}
             </div>
           </div>
-          <Chunk color="acid" onClick={start} disabled={busy}>{busy ? 'Creating…' : 'Start solo test'}</Chunk>
+          <Chunk color="brass" onClick={start} disabled={busy}>{busy ? 'Creating…' : 'Start solo test'}</Chunk>
         </div>
         <button className="text-sm text-muted-foreground underline" onClick={() => navigate('/')}>Back home</button>
       </main>
@@ -120,7 +120,7 @@ export default function Solo() {
       <header className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Logo size="sm" />
-          <span className="rounded-xl bg-panel-2 px-3 py-1.5 font-display text-sm font-extrabold tracking-[0.2em]">{code}</span>
+          <span data-room-code className="wide rounded-[10px] bg-panel-2 px-3 py-1.5 text-sm">{code}</span>
           <span className="text-sm text-muted-foreground">Solo test, {mode === 'party' ? 'TV + phones' : 'phones only'}. {mode === 'bus' ? 'P1 is the host and starts the game.' : 'Start the game from the TV.'}</span>
         </div>
         <button className="inline-flex items-center gap-1 text-sm font-bold text-muted-foreground hover:text-ink" onClick={() => setCode(null)}>

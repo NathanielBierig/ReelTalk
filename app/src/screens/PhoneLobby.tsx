@@ -40,7 +40,7 @@ export function PhoneLobby({ state, send }: { state: RoomView; send: Send }) {
               p={p}
               right={
                 <span className="flex items-center gap-2">
-                  {p.id === state.hostId && <Crown className="size-4 text-acid" aria-label="host" />}
+                  {p.id === state.hostId && <Crown className="size-4 text-brass" aria-label="host" />}
                   <ReelDots have={p.reelCount} need={need} />
                   {state.you.isHost && p.id !== state.you.id && (
                     <button
@@ -71,7 +71,7 @@ export function ReelDots({ have, need }: { have: number; need: number }) {
   return (
     <span className="flex gap-1" aria-label={`${have} of ${need} reels`}>
       {Array.from({ length: need }, (_, i) => (
-        <span key={i} className={cn('h-2.5 w-2.5 rounded-full', i < have ? 'bg-acid' : 'bg-ink/15')} />
+        <span key={i} className={cn('h-2.5 w-2.5 rounded-full', i < have ? 'bg-brass' : 'bg-ink/15')} />
       ))}
     </span>
   )
@@ -117,7 +117,7 @@ function SubmitPanel({ state, send }: { state: RoomView; send: Send }) {
       <div className="flex items-baseline justify-between">
         <Kicker>Your reels</Kicker>
         <span className="font-display text-sm font-extrabold">
-          <span className={full ? 'text-acid' : ''}>{state.myReels.length}</span>/{need}
+          <span className={full ? 'text-brass' : ''}>{state.myReels.length}</span>/{need}
         </span>
       </div>
 
@@ -133,7 +133,7 @@ function SubmitPanel({ state, send }: { state: RoomView; send: Send }) {
               transition={{ type: 'spring', stiffness: 400, damping: 26 }}
               className="flex items-center gap-3 rounded-2xl bg-panel-2 p-3"
             >
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-acid font-display font-black text-night">{i + 1}</span>
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-brass wide text-night">{i + 1}</span>
               <span className="min-w-0 flex-1">
                 <span className="flex items-baseline gap-2">
                   <span className="font-display text-base font-extrabold">Reel {i + 1}</span>
@@ -142,7 +142,7 @@ function SubmitPanel({ state, send }: { state: RoomView; send: Send }) {
                   </a>
                 </span>
                 {r.status === 'music' && (
-                  <Badge variant="secondary" className="mt-1 gap-1 bg-night text-acid"><Music2 className="size-3" /> Has music: opens in Instagram</Badge>
+                  <Badge variant="secondary" className="mt-1 gap-1 bg-night text-brass"><Music2 className="size-3" /> Has music: opens in Instagram</Badge>
                 )}
               </span>
               <button
@@ -169,11 +169,11 @@ function SubmitPanel({ state, send }: { state: RoomView; send: Send }) {
               href="https://www.instagram.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-chunk bg-gradient-to-br from-[#FEDA75] via-[#D62976] to-[#4F5BD5] !px-2 text-sm text-white"
+              className="btn-chunk bg-dusk !px-2 text-sm text-white"
             >
               <Camera className="size-5" /> Instagram
             </a>
-            <Chunk color="acid" onClick={paste} className={cn('!px-2 text-sm', cameBack && 'anim-pulse-ring')}>
+            <Chunk color="brass" onClick={paste} className={cn('!px-2 text-sm', cameBack && 'anim-pulse-ring')}>
               <ClipboardPaste className="size-5" /> Paste
             </Chunk>
           </div>
@@ -222,7 +222,7 @@ export function SettingsRows({ state, send, big }: { state: RoomView; send: Send
                   key={v}
                   onClick={() => send({ t: 'settings', settings: { [o.key]: v } })}
                   className={cn('min-w-10 rounded-lg px-2.5 py-2 font-display text-sm font-extrabold transition-colors',
-                    on ? 'bg-acid text-night' : 'text-ink/60 hover:text-ink')}
+                    on ? 'bg-brass text-night' : 'text-ink/60 hover:text-ink')}
                   aria-pressed={on}
                 >
                   {o.fmt(v)}
@@ -246,8 +246,8 @@ function HostControls({ state, send }: { state: RoomView; send: Send }) {
   const blocker = startBlocker(state)
   const missing = state.players.filter(p => p.reelCount < state.settings.reelsPerPlayer).length
   return (
-    <section className="sticker space-y-4 border-acid/40 p-4">
-      <Kicker className="text-acid">You're the host</Kicker>
+    <section className="sticker space-y-4 border-brass/40 p-4">
+      <Kicker className="text-brass">You're the host</Kicker>
       <SettingsRows state={state} send={send} />
       <StartButton blocker={blocker} missing={missing} onStart={() => send({ t: 'startGame' })} />
       <ShareRoom code={state.code} />
@@ -279,7 +279,7 @@ export function StartButton({ blocker, missing, onStart, className }: {
   }, [armed])
   return (
     <Chunk
-      color={armed ? 'acid' : 'pink'}
+      color={armed ? 'brass' : 'rose'}
       disabled={!!blocker}
       className={className}
       onClick={() => {
