@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Avatar, Chunk, Kicker, Logo, Screen } from '@/components/bits'
-import { savedName, store } from '@/lib/identity'
+import { saveName, savedName } from '@/lib/identity'
 import { LIMITS, type ClientMsg, type RoomView } from '../../shared/types'
 
 export default function Join({ state, send }: { state: RoomView; send: (m: ClientMsg) => void }) {
@@ -10,7 +10,7 @@ export default function Join({ state, send }: { state: RoomView; send: (m: Clien
     e.preventDefault()
     const n = name.trim()
     if (!n) return
-    store('rt:name', n)
+    saveName(n)
     send({ t: 'join', name: n })
   }
   const others = state.players.slice(0, 8)

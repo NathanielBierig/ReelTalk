@@ -76,6 +76,9 @@ export default function Home() {
           <Bus className="size-6" /> {busy === 'bus' ? 'Creating…' : 'Phones only (bus mode)'}
         </Chunk>
         <p className="text-center text-sm text-muted-foreground">3–12 players. Bring headphones for bus mode.</p>
+        <button className="mx-auto block text-sm text-muted-foreground underline" onClick={() => navigate('/solo')}>
+          Solo test: play every seat yourself
+        </button>
       </section>
     </Screen>
   )

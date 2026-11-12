@@ -6,6 +6,7 @@ A party game where your friends' Instagram reels are the cards. Everyone writes 
 
 - **Party mode:** a TV/laptop is the stage (QR join, reel embed, reveals). Phones are controllers.
 - **Bus mode:** phones only. Each phone opens the reel in Instagram (headphones), then answers.
+- **Solo test:** `/solo` on a laptop shows the TV plus 3 or 4 phones in one window, so one person can play every seat. Any tab can also take its own seat with `?seat=p1`.
 
 See [ROADMAP.md](ROADMAP.md) for what is next, [PLAN.md](PLAN.md) for MVP scope, [SPIKE.md](SPIKE.md) for the playback findings.
 

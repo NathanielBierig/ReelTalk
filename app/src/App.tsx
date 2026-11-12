@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Toaster } from '@/components/ui/sonner'
 import Home from './screens/Home'
 import Room from './screens/Room'
+import Solo from './screens/Solo'
 
 export function navigate(path: string) {
   history.pushState(null, '', path)
@@ -18,7 +19,7 @@ export default function App() {
   const m = path.match(/^\/r\/([A-Za-z]{4})\/?$/)
   return (
     <>
-      {m ? <Room code={m[1].toUpperCase()} /> : <Home />}
+      {m ? <Room code={m[1].toUpperCase()} /> : /^\/solo\/?$/.test(path) ? <Solo /> : <Home />}
       <Toaster />
     </>
   )
