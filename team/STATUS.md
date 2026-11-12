@@ -6,12 +6,12 @@ _Owner: Lead. Updated at the end of every Lead session. Last updated: 2026-11-12
 Phase 1 (Playtest and fix). See `ROADMAP.md`.
 
 ## Live
+- Shipped 2026-11-12: `team/` workflow, solo test mode (`/solo`), Playwright smoke suite (`cd app && npm run e2e`, 4 tests).
 - https://reeltalk.netanelbie.workers.dev deploys automatically from `main` (Cloudflare GitHub auto-build).
 
 ## Lead: next up
-1. Merge `claude/sweet-cerf-niryhs` into `main`. It holds this `team/` folder, the solo test mode (`/solo`), and the Playwright smoke suite from `claude/awesome-newton-iyob2y`. `npm run e2e` passes 4/4.
-2. Known UI bug: at 900px laptop height the final screen's Home button is below the fold.
-3. Fix the top 3 problems from your first real game once you report them.
+1. Known UI bug: at 900px laptop height the final screen's Home button is below the fold.
+2. Fix the top 3 problems from your first real game once you report them.
 
 ## Your move
 - [ ] Add the `GIPHY_API_KEY` secret on the Worker (turns on GIF/sticker answers).
