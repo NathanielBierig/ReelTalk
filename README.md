@@ -37,7 +37,7 @@ The game is only as good as the reels. A few minutes of prep before the party ma
 - **Public accounts only**, and no duplicates: private or repeated reels are rejected.
 - **Original audio plays best.** Reels with a licensed song may not play on the TV, but everyone can still tap **Watch the reel** to open it in Instagram.
 
-Stuck? Every screen has a **?** button with these rules.
+Stuck? The home screen, the join screen, the TV lobby and every phone screen have a **?** button with these rules.
 
 ## Ways to play
 
@@ -122,4 +122,4 @@ docs/                  images used in this README
 
 ---
 
-<sub>Reel Talk is an independent project. It is not affiliated with, endorsed by or sponsored by Instagram or Meta. Reels belong to their creators and are only embedded or linked, never copied or stored.</sub>
+<sub>Reel Talk is an independent project. It is not affiliated with, endorsed by or sponsored by Instagram or Meta. Reels belong to their creators and are only embedded or linked, never downloaded or re-hosted.</sub>

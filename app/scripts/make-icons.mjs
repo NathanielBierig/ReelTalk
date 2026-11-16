@@ -75,7 +75,8 @@ async function png(svg, size) {
   return buf
 }
 
-writeFileSync(OUT + 'favicon.svg', iconSvg({ mode: 'full', id: 'fv' }))
+// The SVG is what many browsers draw in the tab (16 to 32 px), so it gets the bold small-size variant too.
+writeFileSync(OUT + 'favicon.svg', iconSvg({ mode: 'bold', id: 'fv' }))
 const small = {}
 for (const n of [16, 32, 48]) small[n] = await png(iconSvg({ mode: 'bold', id: 's' + n }), n)
 writeFileSync(OUT + 'favicon.ico', ico([16, 32, 48].map((n) => ({ size: n, buf: small[n] }))))
