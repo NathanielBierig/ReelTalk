@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { Crown, Users } from 'lucide-react'
 import { Avatar, Kicker, Logo, Timer } from '@/components/bits'
+import { HelpButton } from '@/components/Help'
 import { QR, joinUrl } from '@/components/QR'
 import { ReelStage } from '@/components/ReelCard'
 import { ChatOverlay } from '@/components/Chat'
@@ -52,7 +53,10 @@ function Lobby({ state, send }: Props) {
     <Stage>
       <header className="flex items-center justify-between">
         <Logo size="md" />
-        <span className="flex items-center gap-2 text-xl font-semibold text-muted-foreground"><Users className="size-6" /> {state.players.length} / 12</span>
+        <span className="flex items-center gap-5">
+          <span className="flex items-center gap-2 text-xl font-semibold text-muted-foreground"><Users className="size-6" /> {state.players.length} / 12</span>
+          <HelpButton big />
+        </span>
       </header>
       <div className="grid flex-1 gap-10 lg:grid-cols-[auto_1fr]">
         <section className="flex flex-col items-center gap-5">

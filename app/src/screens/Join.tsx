@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Avatar, Chunk, Kicker, Logo, Screen } from '@/components/bits'
+import { HelpButton } from '@/components/Help'
 import { saveName, savedName } from '@/lib/identity'
 import { LIMITS, type ClientMsg, type RoomView } from '../../shared/types'
 
@@ -15,7 +16,8 @@ export default function Join({ state, send }: { state: RoomView; send: (m: Clien
   }
   const others = state.players.slice(0, 8)
   return (
-    <Screen className="justify-center">
+    <Screen className="relative justify-center">
+      <HelpButton className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))]" />
       <Logo />
       <form onSubmit={submit} className="sticker space-y-4 p-5">
         <Kicker>Joining room <span className="text-acid">{state.code}</span></Kicker>

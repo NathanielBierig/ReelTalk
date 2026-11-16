@@ -4,6 +4,7 @@ import { Bus, Tv } from 'lucide-react'
 import { toast } from 'sonner'
 import { Input } from '@/components/ui/input'
 import { Chunk, Logo, Screen } from '@/components/bits'
+import { HelpButton } from '@/components/Help'
 import { clientId } from '@/lib/identity'
 import { navigate } from '../App'
 import type { Mode } from '../../shared/types'
@@ -36,7 +37,8 @@ export default function Home() {
   }
 
   return (
-    <Screen className="justify-between">
+    <Screen className="relative justify-between">
+      <HelpButton className="absolute right-4 top-[max(1rem,env(safe-area-inset-top))] z-10" />
       <section className="flex flex-col items-center gap-6 pt-10 text-center">
         <motion.div initial={{ rotate: -6, scale: 0.8 }} animate={{ rotate: 0, scale: 1 }} transition={{ type: 'spring', stiffness: 260, damping: 14 }}>
           <Logo size="hero" />

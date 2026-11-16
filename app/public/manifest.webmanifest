@@ -1,0 +1,23 @@
+{
+  "name": "Reel Talk",
+  "short_name": "Reel Talk",
+  "description": "The party game where your friends' reels are the cards.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0E0612",
+  "theme_color": "#0E0612",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

@@ -7,6 +7,7 @@ Phase 1 (Playtest and fix). See `ROADMAP.md`.
 
 ## Live
 - Shipped 2026-11-12 (after playtest 1): full-height cropped reel on the TV, live chat between rounds and on the podium, music-reel handling (decisions 5 to 7).
+- Shipped 2026-11-16: **?** how-to-play sheet (Home, Join, phone top bar, TV lobby), real tab/home-screen icons (`favicon.ico`, PNGs, manifest; before, those URLs returned the HTML page), share image for link previews, new README. Google Search keeps its own cached copy of the old tab icon until it recrawls (days to weeks, not controllable).
 - Shipped 2026-11-12: `team/` workflow, solo test mode (`/solo`), Playwright smoke suite (`cd app && npm run e2e`, 4 tests).
 - https://reeltalk.netanelbie.workers.dev deploys automatically from `main` (Cloudflare GitHub auto-build).
 

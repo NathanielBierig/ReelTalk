@@ -2,6 +2,7 @@ import { motion } from 'motion/react'
 import { useId, type ComponentProps, type ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { HelpButton } from '@/components/Help'
 import type { PublicPlayer } from '../../shared/types'
 
 const FILL = {
@@ -74,10 +75,10 @@ export function Logo({ size = 'md' }: { size?: 'sm' | 'md' | 'xl' | 'hero' }) {
       </div>
     )
   }
-  const t = { sm: 'text-xl', md: 'text-5xl', xl: 'text-8xl' }[size]
-  const m = { sm: 36, md: 72, xl: 128 }[size]
+  const t = { sm: 'text-lg', md: 'text-5xl', xl: 'text-8xl' }[size]
+  const m = { sm: 32, md: 72, xl: 128 }[size]
   return (
-    <div className={cn('display-title flex select-none items-center gap-[0.4em]', t)} aria-label="Reel Talk">
+    <div className={cn('display-title flex select-none items-center gap-[0.4em] whitespace-nowrap', t)} aria-label="Reel Talk">
       <LogoMark size={m} animate={size !== 'sm'} />
       <span>Reel <Talk /></span>
     </div>
@@ -151,9 +152,10 @@ export function TopBar({ code, label }: { code: string; label?: ReactNode }) {
   return (
     <header className="flex items-center justify-between gap-3">
       <Logo size="sm" />
-      <div className="flex items-center gap-2">
-        {label}
-        <span className="rounded-xl border-[1.5px] border-acid/45 bg-panel px-3 py-1.5 font-display text-sm tracking-[0.2em] text-acid">{code}</span>
+      <div className="flex items-center gap-1.5">
+        {label && <span className="max-[359px]:hidden">{label}</span>}
+        <span className="rounded-xl border-[1.5px] border-acid/45 bg-panel px-2.5 py-1.5 font-display text-[0.8rem] tracking-[0.2em] text-acid">{code}</span>
+        <HelpButton />
       </div>
     </header>
   )
